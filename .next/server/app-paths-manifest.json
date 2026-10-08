@@ -1,0 +1,10 @@
+{
+  "/automation/page": "app/automation/page.js",
+  "/recorder/page": "app/recorder/page.js",
+  "/test-cases/page": "app/test-cases/page.js",
+  "/execution/page": "app/execution/page.js",
+  "/defects/page": "app/defects/page.js",
+  "/reports/page": "app/reports/page.js",
+  "/failure-analysis/page": "app/failure-analysis/page.js",
+  "/traceability/page": "app/traceability/page.js"
+}
