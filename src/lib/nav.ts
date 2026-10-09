@@ -20,6 +20,7 @@ export const navItems: NavItem[] = [
   { href: "/test-data", label: "Test Data", icon: Database },
   { href: "/automation", label: "Automation", icon: Bot },
   { href: "/recorder", label: "Recorder", icon: CircleDot },
+  { href: "/business-flows", label: "Business Flows", icon: GitBranch },
   { href: "/execution", label: "Test Execution", icon: Play },
   { href: "/failure-analysis", label: "Failure Analysis", icon: Search, badge: "6" },
   { href: "/execution-report", label: "Execution Report", icon: FileBarChart },

@@ -421,3 +421,24 @@ export const executionByBrowser = [
   { browser: "Firefox", passed: 172, failed: 8, skipped: 6 },
   { browser: "WebKit", passed: 169, failed: 10, skipped: 7 },
 ];
+
+
+export interface BusinessFlowRecord {
+  id: string;
+  name: string;
+  description: string;
+  mappingType: "requirement" | "scenario";
+  mappingId: string;
+  mappingTitle: string;
+  environment: "QA" | "UAT" | "Staging" | "Local";
+  status: "Draft" | "Recorded" | "Approved";
+  steps: number;
+  artifacts: number;
+  updatedAt: string;
+}
+
+export const businessFlows: BusinessFlowRecord[] = [
+  { id: "FLOW-001", name: "Customer Login and Product Discovery", description: "A customer signs in and discovers a product through search.", mappingType: "requirement", mappingId: "JIRA-1245", mappingTitle: "User Login", environment: "QA", status: "Recorded", steps: 5, artifacts: 14, updatedAt: "Today, 09:32" },
+  { id: "FLOW-002", name: "Saved Card Checkout", description: "A returning customer completes checkout with a saved payment method.", mappingType: "scenario", mappingId: "TS-011", mappingTitle: "Checkout With Saved Card", environment: "QA", status: "Approved", steps: 8, artifacts: 21, updatedAt: "Yesterday" },
+  { id: "FLOW-003", name: "Password Recovery", description: "A user requests and validates a password reset journey.", mappingType: "requirement", mappingId: "CONF-08", mappingTitle: "Password Reset", environment: "QA", status: "Draft", steps: 4, artifacts: 8, updatedAt: "May 12" },
+];

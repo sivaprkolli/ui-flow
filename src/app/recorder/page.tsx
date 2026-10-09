@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   Bot, Camera, CheckCircle2, CircleStop, Clock3, Code2, FileJson2, FileVideo2,
-  Globe2, Image, Layers3, ListPlus, MonitorPlay, Network, Pause, Play,
+  GitBranch, Globe2, Image, Layers3, ListPlus, MonitorPlay, Network, Pause, Play,
   ShieldCheck, TerminalSquare, Trash2, WandSparkles,
 } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
@@ -12,6 +12,9 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/toast";
+import { RecorderArtifactScriptReview } from "@/components/recorder/recorder-artifact-script-review";
+import { CapturedInteractionsToTestSteps } from "@/components/recorder/captured-interactions-to-test-steps";
+import { saveRecordedStepDrafts, type RecordedInteraction } from "@/lib/recorded-step-drafts";
 import { testCases } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 
@@ -31,6 +34,13 @@ const initialEvents = [
   { id: 4, time: "00:11", label: "Clicked Login", detail: "role=button · name=Login" },
 ];
 
+const initialInteractions: RecordedInteraction[] = [
+  { id: 1, time: "00:00", action: "Navigate", target: "QA application login", selector: "page.goto(base_url)", testStep: "Navigate to {{base_url}}", artifacts: 3 },
+  { id: 2, time: "00:06", action: "Input", target: "Username field", selector: "getByLabel('Username')", testStep: "Enter {{username}}", artifacts: 2 },
+  { id: 3, time: "00:09", action: "Input", target: "Password field", selector: "getByLabel('Password')", testStep: "Enter {{password}}", artifacts: 2 },
+  { id: 4, time: "00:11", action: "Click", target: "Login button", selector: "getByRole('button', { name: 'Login' })", testStep: "Click Login", artifacts: 4 },
+];
+
 export default function RecorderPage() {
   const router = useRouter();
   const { toast } = useToast();
@@ -38,8 +48,11 @@ export default function RecorderPage() {
   const [paused, setPaused] = useState(false);
   const [elapsed, setElapsed] = useState(14);
   const [events, setEvents] = useState(initialEvents);
+  const [interactions, setInteractions] = useState<RecordedInteraction[]>(initialInteractions);
   const [artifacts, setArtifacts] = useState(captureTypes.map((capture) => capture.id));
   const [selectedCase, setSelectedCase] = useState("TC-001");
+  const [reviewOpen, setReviewOpen] = useState(false);
+  const activeTestCase = testCases.find((testCase) => testCase.id === selectedCase) ?? testCases[0];
 
   useEffect(() => {
     if (!recording || paused) return;
@@ -50,7 +63,9 @@ export default function RecorderPage() {
   const formatted = `${String(Math.floor(elapsed / 60)).padStart(2, "0")}:${String(elapsed % 60).padStart(2, "0")}`;
   const toggleArtifact = (id: string) => setArtifacts((current) => current.includes(id) ? current.filter((item) => item !== id) : [...current, id]);
   const addMarker = () => {
-    setEvents((current) => [...current, { id: Date.now(), time: formatted, label: `Manual checkpoint ${current.length + 1}`, detail: "User-marked validation step" }]);
+    const id = Date.now();
+    setEvents((current) => [...current, { id, time: formatted, label: `Manual checkpoint ${current.length + 1}`, detail: "User-marked validation step" }]);
+    setInteractions((current) => [...current, { id, time: formatted, action: "Checkpoint", target: `Business or validation milestone ${current.length + 1}`, selector: "recorder.markStep()", testStep: "Verify the expected business outcome", artifacts: 3 }]);
     toast({ title: "Checkpoint captured", description: "Screenshot, DOM snapshot and trace marker added.", variant: "success" });
   };
   const start = () => {
@@ -62,6 +77,7 @@ export default function RecorderPage() {
   const stop = () => {
     setRecording(false);
     setPaused(false);
+    setReviewOpen(true);
     toast({ title: "Recording finalized", description: `${events.length} steps and ${artifacts.length} artifact types captured.`, variant: "success" });
   };
 
@@ -71,7 +87,7 @@ export default function RecorderPage() {
         title="Manual Recorder"
         description="Guide the browser flow yourself and capture rich evidence for test creation, debugging, and automation."
         icon={<Camera className="size-5" />}
-        actions={<><Button variant="secondary" onClick={() => toast({ title: "Previous session loaded", variant: "info" })}><Clock3 className="size-4" /> Session History</Button><Button variant="gradient" onClick={() => router.push(`/automation?testCase=${selectedCase}`)}><Bot className="size-4" /> Generate Automation</Button></>}
+        actions={<><Button variant="secondary" onClick={() => toast({ title: "Previous session loaded", variant: "info" })}><Clock3 className="size-4" /> Session History</Button><Button variant="secondary" onClick={() => router.push("/business-flows")}><GitBranch className="size-4" /> Business Flow Recorder</Button><Button variant="gradient" onClick={() => router.push(`/automation?testCase=${selectedCase}`)}><Bot className="size-4" /> Generate Automation</Button></>}
       />
 
       <div className="grid gap-6 xl:grid-cols-[1fr_370px]">
@@ -111,14 +127,16 @@ export default function RecorderPage() {
           </Card>
 
           <Card><CardHeader className="flex-row items-center justify-between"><div><CardTitle className="text-base">Captured Steps</CardTitle><CardDescription>Actions become automation candidates with stable selectors and attached evidence.</CardDescription></div><Badge variant="secondary">{events.length} steps</Badge></CardHeader><CardContent><div className="space-y-2">{events.map((event, index) => <div key={event.id} className="flex items-start gap-3 rounded-xl border border-border bg-secondary/20 p-3"><span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">{index + 1}</span><div className="min-w-0 flex-1"><div className="flex items-center justify-between gap-2"><p className="text-sm font-medium">{event.label}</p><span className="font-mono text-[11px] text-muted-foreground">{event.time}</span></div><p className="mt-0.5 font-mono text-xs text-muted-foreground">{event.detail}</p></div><Badge variant="success"><CheckCircle2 className="size-3" /> Captured</Badge></div>)}</div></CardContent></Card>
+          <CapturedInteractionsToTestSteps interactions={interactions} targetLabel={selectedCase} targetDescription={activeTestCase.title} onFeed={(selected) => { saveRecordedStepDrafts(selectedCase, "manual_recorder", selected); toast({ title: "Test-step draft created", description: `${selected.length} captured interactions were sent to ${selectedCase}.`, variant: "success" }); router.push(`/test-cases?testCase=${selectedCase}&source=manual-recorder`); }} />
         </div>
 
         <aside className="space-y-6">
           <Card><CardHeader><CardTitle className="flex items-center gap-2 text-base"><WandSparkles className="size-4 text-primary" /> Artifact Capture</CardTitle><CardDescription>Choose evidence to collect during this recording.</CardDescription></CardHeader><CardContent className="space-y-2">{captureTypes.map((capture) => { const Icon = capture.icon; const active = artifacts.includes(capture.id); return <button key={capture.id} onClick={() => !recording && toggleArtifact(capture.id)} className={cn("flex w-full items-center gap-3 rounded-lg border p-3 text-left", active ? "border-primary/35 bg-primary/5" : "border-border bg-secondary/20", recording && "cursor-default opacity-70")}><span className={cn("flex size-8 items-center justify-center rounded-lg bg-secondary", capture.color)}><Icon className="size-4" /></span><span className="flex-1"><span className="block text-sm font-medium">{capture.label}</span><span className="block text-xs text-muted-foreground">{capture.detail}</span></span><span className={cn("size-4 rounded border", active ? "border-primary bg-primary" : "border-muted-foreground/40")}>{active && <CheckCircle2 className="size-3.5 text-primary-foreground" />}</span></button>; })}</CardContent></Card>
-          <Card className="border-success/25 bg-success/5"><CardHeader><CardTitle className="text-base">Artifact Summary</CardTitle></CardHeader><CardContent className="space-y-3"><Artifact label="Screenshots" value="8" icon={Image} /><Artifact label="Video" value="1 recording" icon={FileVideo2} /><Artifact label="Trace" value="1 trace.zip" icon={MonitorPlay} /><Artifact label="Network" value="24 requests" icon={Network} /><Artifact label="Console" value="0 errors" icon={TerminalSquare} /><Button variant="gradient" className="mt-2 w-full" onClick={() => router.push(`/automation?testCase=${selectedCase}`)}><Code2 className="size-4" /> Generate Automation</Button></CardContent></Card>
+          <Card className="border-success/25 bg-success/5"><CardHeader><CardTitle className="text-base">Artifact Summary</CardTitle></CardHeader><CardContent className="space-y-3"><Artifact label="Screenshots" value="8" icon={Image} /><Artifact label="Video" value="1 recording" icon={FileVideo2} /><Artifact label="Trace" value="1 trace.zip" icon={MonitorPlay} /><Artifact label="Network" value="24 requests" icon={Network} /><Artifact label="Console" value="0 errors" icon={TerminalSquare} /><Button variant="secondary" className="w-full" onClick={() => setReviewOpen(true)}><Image className="size-4" /> Review Artifacts & Script</Button><Button variant="gradient" className="mt-2 w-full" onClick={() => router.push(`/automation?testCase=${selectedCase}`)}><Code2 className="size-4" /> Generate Automation</Button></CardContent></Card>
           <Card><CardHeader><CardTitle className="text-base">Recent Sessions</CardTitle></CardHeader><CardContent className="space-y-2">{[{ name: "Checkout guest flow", time: "Today, 09:32", artifacts: 14 }, { name: "Search relevance", time: "Yesterday", artifacts: 11 }, { name: "Password reset", time: "May 12", artifacts: 9 }].map((session) => <button key={session.name} className="flex w-full items-center justify-between rounded-lg border border-border bg-secondary/20 p-3 text-left hover:bg-accent"><div><p className="text-sm font-medium">{session.name}</p><p className="text-xs text-muted-foreground">{session.time}</p></div><Badge variant="secondary">{session.artifacts} files</Badge></button>)}</CardContent></Card>
         </aside>
       </div>
+      <RecorderArtifactScriptReview testCase={activeTestCase} open={reviewOpen} onClose={() => setReviewOpen(false)} source="Manual Recorder" />
     </div>
   );
 }

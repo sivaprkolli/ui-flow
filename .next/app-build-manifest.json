@@ -1,50 +1,15 @@
 {
   "pages": {
-    "/execution/page": [
+    "/business-flows/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/execution/page.js"
+      "static/chunks/app/business-flows/page.js"
     ],
     "/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
-    ],
-    "/automation/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/automation/page.js"
-    ],
-    "/test-cases/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/test-cases/page.js"
-    ],
-    "/recorder/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/recorder/page.js"
-    ],
-    "/traceability/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/traceability/page.js"
-    ],
-    "/reports/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/reports/page.js"
-    ],
-    "/defects/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/defects/page.js"
-    ],
-    "/failure-analysis/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/failure-analysis/page.js"
     ]
   }
 }

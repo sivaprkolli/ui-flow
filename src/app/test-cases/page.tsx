@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FileText, Sparkles, Bot, Play, Check, Pencil, ArrowRight, Database, Link2, Braces, FileCheck2, ListChecks } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
@@ -14,6 +14,7 @@ import { CanonicalVariableRegistry } from "@/components/test-cases/canonical-var
 import { AutomateTestCaseModal } from "@/components/recorder/automate-test-case-modal";
 import { generateBddFeature, validateCanonicalVariables } from "@/lib/canonical-variables";
 import { testCases, testDataSets, type TestCase } from "@/lib/mock-data";
+import { clearRecordedStepDrafts, readRecordedStepDrafts, type RecordedStepDraft } from "@/lib/recorded-step-drafts";
 import { cn } from "@/lib/utils";
 
 type TestCaseFormat = "standard" | "bdd";
@@ -23,7 +24,21 @@ export default function TestCasesPage() {
   const { toast } = useToast();
   const [format, setFormat] = useState<TestCaseFormat>("standard");
   const [selected, setSelected] = useState<TestCase | null>(null);
+  const [recorderDrafts, setRecorderDrafts] = useState<RecordedStepDraft[]>([]);
+  const [appliedRecorderDrafts, setAppliedRecorderDrafts] = useState<RecordedStepDraft[]>([]);
   const [recorderTestCase, setRecorderTestCase] = useState<TestCase | null>(null);
+  useEffect(() => {
+    const targetId = new URLSearchParams(window.location.search).get("testCase");
+    if (targetId) setSelected(testCases.find((testCase) => testCase.id === targetId) ?? null);
+  }, []);
+
+  useEffect(() => {
+    if (selected) {
+      setRecorderDrafts(readRecordedStepDrafts(selected.id));
+      setAppliedRecorderDrafts([]);
+    }
+  }, [selected]);
+
   const selectedDataSets = selected ? testDataSets.filter((dataSet) => selected.testDataSetIds.includes(dataSet.id)) : [];
   const validationErrors = selected ? validateCanonicalVariables(selected.id, selected.variables, selected.manualSteps).filter((issue) => issue.severity === "error") : [];
   const formatLabel = format === "standard" ? "Standard Test Cases" : "BDD / Gherkin Scenarios";
@@ -51,6 +66,7 @@ export default function TestCasesPage() {
     <Drawer open={!!selected} onClose={() => setSelected(null)} className="max-w-2xl">
       {selected && <div className="p-6"><div className="flex items-start justify-between gap-4"><div><span className="font-mono text-xs font-medium text-primary">{selected.id}</span><h2 className="mt-1 text-xl font-semibold">{format === "standard" ? selected.title : `Scenario: ${selected.title}`}</h2></div><Badge variant={format === "standard" ? "default" : "success"}>{format === "standard" ? "Standard" : "BDD / Gherkin"}</Badge></div><div className="mt-3 flex flex-wrap gap-2"><StatusPill status={selected.priority} /><Badge variant="secondary">{selected.type}</Badge><StatusPill status={selected.status} /></div>
         {format === "standard" ? <Section title="Manual Test Case"><ol className="space-y-2">{selected.manualSteps.map((step) => <li key={step.step} className="flex gap-3 rounded-lg border border-border bg-secondary/20 p-3"><span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[11px] font-semibold text-primary">{step.step}</span><div><p className="text-sm">{step.instruction}</p><p className="mt-1 text-xs text-muted-foreground">Automation step {step.automationStep} · {step.variableIds.length ? step.variableIds.join(", ") : "No variable"}</p></div></li>)}</ol></Section> : <Section title="Gherkin Scenario"><div className="overflow-x-auto rounded-lg border border-border bg-secondary/20 p-4"><pre className="whitespace-pre-wrap font-mono text-xs leading-6 text-foreground">{generateBddFeature({ testCaseId: selected.id, requirementId: selected.requirement, title: selected.title, variables: selected.variables, manualSteps: selected.manualSteps })}</pre></div><p className="mt-2 text-xs text-muted-foreground">This is the selected BDD representation only. It retains the exact canonical &#123;&#123;variable_name&#125;&#125; references and stable IDs.</p></Section>}
+        {format === "standard" && (recorderDrafts.length > 0 || appliedRecorderDrafts.length > 0) && <Section title="Recorder-Derived Test Steps"><div className="space-y-2 rounded-xl border border-primary/25 bg-primary/5 p-3"><div className="flex items-center justify-between"><div><p className="text-sm font-medium">Captured interactions mapped to test steps</p><p className="text-xs text-muted-foreground">Manual Recorder and Business Flow Recorder preserve interaction, selector, artifacts, and generated step wording.</p></div><Badge variant="default">{recorderDrafts.length + appliedRecorderDrafts.length} drafts</Badge></div>{[...appliedRecorderDrafts, ...recorderDrafts].map((draft, index) => <div key={`${draft.id}-${index}`} className="rounded-lg border border-border bg-card p-3"><div className="flex items-center justify-between gap-2"><p className="text-sm font-medium">{draft.testStep}</p><Badge variant={draft.source === "business_flow" ? "purple" : "info"}>{draft.source === "business_flow" ? "Business Flow" : "Manual Recorder"}</Badge></div><p className="mt-1 font-mono text-xs text-muted-foreground">{draft.action} · {draft.selector} · {draft.artifacts} artifacts</p></div>)}{recorderDrafts.length > 0 && <Button variant="gradient" className="mt-2 w-full" onClick={() => { setAppliedRecorderDrafts((current) => [...current, ...recorderDrafts]); clearRecordedStepDrafts(selected.id); setRecorderDrafts([]); toast({ title: "Recorder steps applied", description: `${recorderDrafts.length} interaction drafts are now included in this test case.`, variant: "success" }); }}><FileCheck2 className="size-4" /> Apply Recorder Steps to Test Case</Button>}</div></Section>}
         <Section title="Source-backed Test Data"><div className="space-y-2">{selectedDataSets.map((dataSet) => <div key={dataSet.id} className="rounded-lg border border-border bg-secondary/20 p-3"><p className="flex items-center gap-2 text-sm font-medium"><Database className="size-4 text-primary" />{dataSet.name}</p><p className="mt-1 text-xs text-muted-foreground">{dataSet.id} · {dataSet.source} · {dataSet.environment}</p></div>)}<Button variant="outline" size="sm" onClick={() => router.push(`/test-data?testCase=${selected.id}`)}><Link2 className="size-3.5" /> Manage Test Data</Button></div></Section>
         <Section title="Canonical Variable Registry"><CanonicalVariableRegistry testCase={selected} /></Section>
         <div className="mt-6 grid grid-cols-2 gap-2"><Button variant="secondary" onClick={() => toast({ title: `Edit ${formatLabel}`, variant: "info" })}><Pencil className="size-4" /> Edit</Button><Button variant="secondary" disabled={validationErrors.length > 0} onClick={() => setRecorderTestCase(selected)}><Bot className="size-4" /> Automate Test Case</Button><Button variant="gradient" onClick={() => router.push("/execution")}><Play className="size-4" /> Execute</Button><Button variant="success" onClick={() => toast({ title: `${formatLabel} approved`, variant: "success" })}><Check className="size-4" /> Approve</Button></div>{validationErrors.length > 0 && <p className="mt-2 text-xs text-danger">Resolve canonical variable validation before generating automation.</p>}
