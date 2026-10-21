@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { ExecutionDurationChart, BrowserExecutionChart } from "@/components/operational/charts";
+import { TestExecutionExplorer } from "@/components/reports/test-execution-explorer";
+import { CurrentBuildImpact } from "@/components/reports/current-build-impact";
 import { executionReportMetrics, executionRows } from "@/lib/mock-data";
 import { useToast } from "@/components/ui/toast";
 
@@ -22,6 +24,10 @@ export default function ExecutionReportPage() {
     <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-6"><Metric label="Total" value={metrics.total.toString()} icon={BarChart3} tone="text-primary" /><Metric label="Passed" value={metrics.passed.toString()} icon={CheckCircle2} tone="text-success" /><Metric label="Failed" value={metrics.failed.toString()} icon={FileBarChart} tone="text-danger" /><Metric label="Skipped" value={metrics.skipped.toString()} icon={RotateCcw} tone="text-muted-foreground" /><Metric label="Duration" value={metrics.duration} icon={Clock3} tone="text-sky-400" /><Metric label="Avg. duration" value={metrics.avgDuration} icon={Clock3} tone="text-fuchsia-400" /></div>
 
     <div className="grid gap-6 lg:grid-cols-3"><Card className="lg:col-span-2"><CardHeader><CardTitle className="text-base">Execution Duration & Pass Rate</CardTitle><CardDescription>Build-over-build execution efficiency and reliability.</CardDescription></CardHeader><CardContent><ExecutionDurationChart /></CardContent></Card><Card><CardHeader><CardTitle className="text-base">Result Composition</CardTitle><CardDescription>Latest build outcome.</CardDescription></CardHeader><CardContent className="space-y-4"><ResultRow label="Passed" value={metrics.passed} total={metrics.total} tone="bg-success" /><ResultRow label="Failed" value={metrics.failed} total={metrics.total} tone="bg-danger" /><ResultRow label="Skipped" value={metrics.skipped} total={metrics.total} tone="bg-muted-foreground" /><div className="rounded-lg border border-border bg-secondary/30 p-3 text-xs text-muted-foreground">{metrics.selfHealed} failure(s) recovered autonomously before final report generation.</div></CardContent></Card></div>
+
+    <CurrentBuildImpact />
+
+    <TestExecutionExplorer />
 
     <div className="grid gap-6 lg:grid-cols-2"><Card><CardHeader><CardTitle className="text-base">Cross-Browser Execution</CardTitle><CardDescription>Results by supported browser target.</CardDescription></CardHeader><CardContent><BrowserExecutionChart /></CardContent></Card><Card><CardHeader><CardTitle className="text-base">Latest Execution Results</CardTitle><CardDescription>Most recent individual test outcomes from build {metrics.build}.</CardDescription></CardHeader><CardContent className="p-0"><div className="max-h-[310px] overflow-auto scrollbar-thin"><table className="w-full text-sm"><thead className="sticky top-0 bg-card"><tr className="border-b border-border text-left text-xs uppercase tracking-wide text-muted-foreground"><th className="px-5 py-3 font-medium">Test</th><th className="px-5 py-3 font-medium">Duration</th><th className="px-5 py-3 font-medium">Status</th></tr></thead><tbody>{executionRows.map((row) => <tr key={row.id} className="border-b border-border/60 last:border-0"><td className="px-5 py-3"><p className="font-medium">{row.test}</p><p className="font-mono text-xs text-primary">{row.id}</p></td><td className="px-5 py-3 tabular-nums text-muted-foreground">{row.duration}</td><td className="px-5 py-3"><Badge variant={row.status === "Passed" ? "success" : row.status === "Failed" ? "danger" : row.status === "Running" ? "warning" : "secondary"}>{row.status}</Badge></td></tr>)}</tbody></table></div></CardContent></Card></div>
   </div>;

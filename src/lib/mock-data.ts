@@ -372,11 +372,12 @@ export interface FailureAnalysisRecord {
   suggestedFix: string;
   affectedTests: number;
   evidence: string[];
+  bugId?: string;
 }
 
 export const failureAnalysisRecords: FailureAnalysisRecord[] = [
-  { id: "FA-001", testId: "TC-045", test: "Checkout With Saved Card", severity: "Critical", category: "UI change", status: "Self-healed", duration: "8.4s", occurredAt: "09:48", confidence: 98, rootCause: "Checkout button locator was removed during the checkout redesign.", suggestedFix: "Use getByRole('button', { name: 'Checkout' }) in CheckoutPage.", affectedTests: 6, evidence: ["DOM diff", "Visual diff", "Locator history"] },
-  { id: "FA-002", testId: "TC-021", test: "Login API Error Handling", severity: "High", category: "API response", status: "Open defect", duration: "2.8s", occurredAt: "09:49", confidence: 94, rootCause: "Authentication endpoint returns an undocumented 401 payload shape.", suggestedFix: "Normalize the auth error payload and add a contract assertion.", affectedTests: 2, evidence: ["API trace", "Response schema diff", "Recent deployment"] },
+  { id: "FA-001", testId: "TC-045", test: "Checkout With Saved Card", severity: "Critical", category: "UI change", status: "Self-healed", duration: "8.4s", occurredAt: "09:48", confidence: 98, rootCause: "Checkout button locator was removed during the checkout redesign.", suggestedFix: "Use getByRole('button', { name: 'Checkout' }) in CheckoutPage.", affectedTests: 6, evidence: ["DOM diff", "Visual diff", "Locator history"], bugId: "BUG-102" },
+  { id: "FA-002", testId: "TC-021", test: "Login API Error Handling", severity: "High", category: "API response", status: "Open defect", duration: "2.8s", occurredAt: "09:49", confidence: 94, rootCause: "Authentication endpoint returns an undocumented 401 payload shape.", suggestedFix: "Normalize the auth error payload and add a contract assertion.", affectedTests: 2, evidence: ["API trace", "Response schema diff", "Recent deployment"], bugId: "BUG-103" },
   { id: "FA-003", testId: "TC-061", test: "Product Search Relevance", severity: "Medium", category: "Data issue", status: "Investigating", duration: "4.2s", occurredAt: "09:51", confidence: 87, rootCause: "Catalog fixture index is stale after the latest repository sync.", suggestedFix: "Refresh TD-004 and validate the catalog fixture schema.", affectedTests: 1, evidence: ["Fixture freshness", "Search ranking trace", "Dataset health"] },
   { id: "FA-004", testId: "TC-052", test: "Add To Cart Boundary", severity: "High", category: "Timing", status: "Resolved", duration: "5.1s", occurredAt: "Yesterday", confidence: 91, rootCause: "Cart total recalculation completed after the assertion window.", suggestedFix: "Wait for the cart-total update event before asserting the price.", affectedTests: 3, evidence: ["Playwright trace", "Network waterfall", "Event timing"] },
   { id: "FA-005", testId: "TC-070", test: "Password Reset Email", severity: "Medium", category: "Environment", status: "Resolved", duration: "6.3s", occurredAt: "Yesterday", confidence: 89, rootCause: "QA mail sandbox was unavailable for 4 minutes.", suggestedFix: "Add mail sandbox readiness probe to preflight.", affectedTests: 1, evidence: ["Environment health", "Mail API timeout", "Retry history"] },
@@ -441,4 +442,178 @@ export const businessFlows: BusinessFlowRecord[] = [
   { id: "FLOW-001", name: "Customer Login and Product Discovery", description: "A customer signs in and discovers a product through search.", mappingType: "requirement", mappingId: "JIRA-1245", mappingTitle: "User Login", environment: "QA", status: "Recorded", steps: 5, artifacts: 14, updatedAt: "Today, 09:32" },
   { id: "FLOW-002", name: "Saved Card Checkout", description: "A returning customer completes checkout with a saved payment method.", mappingType: "scenario", mappingId: "TS-011", mappingTitle: "Checkout With Saved Card", environment: "QA", status: "Approved", steps: 8, artifacts: 21, updatedAt: "Yesterday" },
   { id: "FLOW-003", name: "Password Recovery", description: "A user requests and validates a password reset journey.", mappingType: "requirement", mappingId: "CONF-08", mappingTitle: "Password Reset", environment: "QA", status: "Draft", steps: 4, artifacts: 8, updatedAt: "May 12" },
+];
+
+
+export const referenceTestRunReport = {
+  title: "Test report",
+  generatedAt: "10/14/2026, 10:49:07 AM",
+  duration: "18.7s",
+  workers: 1,
+  stats: { passed: 0, failed: 1, flaky: 0, skipped: 0, total: 1 },
+  environment: [
+    ["Playwright", "1.63.0"],
+    ["Node", "v24.20.0"],
+    ["OS", "Darwin 25.6.0 (arm64)"],
+    ["Browsers", "chromium"],
+    ["Workers", "4"],
+    ["Commit", "7db2a10 · Shiva K · changes"],
+    ["Branch", "main"],
+  ],
+  test: {
+    title: "Automated test for logging in, adding an item to the cart, and proceeding to checkout on Sauce Demo.",
+    suite: "Sauce Demo Checkout Flow @sauceTest",
+    spec: "tests/ui/sauce_demo.spec.ts",
+    line: 7,
+    duration: "16.9s",
+    status: "Failed",
+    error: "TimeoutError: locator.fill: Timeout 15000ms exceeded.",
+    locator: "getByRole('textbox', { name: 'xyz' })",
+    explanation: "The selector was not on the page within 15 seconds, so locator.fill could not run.",
+    hint: "Check the selector. The element may be inside an iframe, behind a login, or shown only after another step.",
+  },
+};
+
+
+export interface FailureExecutionHistoryEntry {
+  runId: string;
+  time: string;
+  commit: string;
+  status: "Passed" | "Failed";
+  durationMs: number;
+  attempt: number;
+  fingerprint: string;
+  locator: string;
+  error?: string;
+  screenshot: "available" | "not-needed";
+  trace: "available" | "not-needed";
+}
+
+export const failureExecutionHistory: FailureExecutionHistoryEntry[] = [
+  { runId: "#482", time: "Oct 14, 10:49", commit: "7db2a10", status: "Failed", durationMs: 16930, attempt: 1, fingerprint: "locator-not-found:textbox:xyz", locator: "getByRole('textbox', { name: 'xyz' })", error: "TimeoutError: locator.fill: Timeout 15000ms exceeded.", screenshot: "available", trace: "available" },
+  { runId: "#481", time: "Oct 14, 10:12", commit: "6d91c8f", status: "Passed", durationMs: 6414, attempt: 1, fingerprint: "", locator: "getByLabel('Username')", screenshot: "not-needed", trace: "available" },
+  { runId: "#480", time: "Oct 14, 09:48", commit: "6d91c8f", status: "Passed", durationMs: 6687, attempt: 1, fingerprint: "", locator: "getByLabel('Username')", screenshot: "not-needed", trace: "available" },
+  { runId: "#479", time: "Oct 13, 17:26", commit: "5f0a3e2", status: "Passed", durationMs: 6238, attempt: 1, fingerprint: "", locator: "getByLabel('Username')", screenshot: "not-needed", trace: "not-needed" },
+  { runId: "#478", time: "Oct 13, 16:57", commit: "5f0a3e2", status: "Failed", durationMs: 21360, attempt: 1, fingerprint: "locator-not-found:textbox:xyz", locator: "getByRole('textbox', { name: 'xyz' })", error: "TimeoutError: locator.fill: Timeout 15000ms exceeded.", screenshot: "available", trace: "available" },
+];
+
+
+export interface ExecutionTestCatalogItem {
+  id: string;
+  title: string;
+  spec: string;
+  module: string;
+  feature: string;
+  tags: string[];
+  project: string;
+  status: "Passed" | "Failed" | "Flaky" | "Skipped";
+  durationMs: number;
+  steps: Array<{ title: string; category: "hook" | "pw:api" | "assertion"; durationMs: number; status: "Passed" | "Failed" | "Skipped" }>;
+}
+
+export const executionTestCatalog: ExecutionTestCatalogItem[] = [
+  { id: "SETUP-001", title: "authenticate and save storage state", spec: "tests/auth.setup.ts", module: "Authentication", feature: "Session Setup", tags: ["@setup", "@auth"], project: "chromium", status: "Passed", durationMs: 1100, steps: [{ title: "Before Hooks", category: "hook", durationMs: 533, status: "Passed" }, { title: "Navigate", category: "pw:api", durationMs: 575, status: "Passed" }, { title: "Fill username", category: "pw:api", durationMs: 66, status: "Passed" }, { title: "Fill password", category: "pw:api", durationMs: 34, status: "Passed" }, { title: "Click Login", category: "pw:api", durationMs: 50, status: "Passed" }] },
+  { id: "API-CART-001", title: "CREATE - add an item to the cart", spec: "tests/api/crud.spec.ts", module: "API", feature: "Cart Items", tags: ["@api", "@crud", "@smoke"], project: "chromium", status: "Passed", durationMs: 308, steps: [{ title: "Create API client", category: "hook", durationMs: 42, status: "Passed" }, { title: "POST /cart/items", category: "pw:api", durationMs: 214, status: "Passed" }, { title: "Validate created item", category: "assertion", durationMs: 52, status: "Passed" }] },
+  { id: "API-CART-002", title: "READ - list cart items reflects the added item", spec: "tests/api/crud.spec.ts", module: "API", feature: "Cart Items", tags: ["@api", "@crud", "@smoke"], project: "chromium", status: "Passed", durationMs: 703, steps: [{ title: "GET /cart/items", category: "pw:api", durationMs: 610, status: "Passed" }, { title: "Validate response schema", category: "assertion", durationMs: 93, status: "Passed" }] },
+  { id: "API-CART-003", title: "UPDATE (PATCH) - change item quantity", spec: "tests/api/crud.spec.ts", module: "API", feature: "Cart Items", tags: ["@api", "@crud", "@regression"], project: "chromium", status: "Passed", durationMs: 1329, steps: [{ title: "PATCH /cart/items", category: "pw:api", durationMs: 1190, status: "Passed" }, { title: "Validate cart quantity", category: "assertion", durationMs: 139, status: "Passed" }] },
+  { id: "API-ORDER-001", title: "CREATE - place a new order", spec: "tests/api/crud.spec.ts", module: "API", feature: "Orders", tags: ["@api", "@crud", "@smoke"], project: "chromium", status: "Passed", durationMs: 1582, steps: [{ title: "POST /orders", category: "pw:api", durationMs: 1450, status: "Passed" }, { title: "Validate order ID", category: "assertion", durationMs: 132, status: "Passed" }] },
+  { id: "UI-SAUCE-001", title: "Automated checkout flow on Sauce Demo", spec: "tests/ui/sauce_demo.spec.ts", module: "Checkout", feature: "Sauce Demo Checkout Flow", tags: ["@sauceTest", "@ui", "@smoke"], project: "saucedemo", status: "Failed", durationMs: 16930, steps: [{ title: "Before Hooks", category: "hook", durationMs: 1563, status: "Passed" }, { title: "Navigate", category: "pw:api", durationMs: 933, status: "Passed" }, { title: "Fill username", category: "pw:api", durationMs: 15003, status: "Failed" }, { title: "After Hooks", category: "hook", durationMs: 515, status: "Passed" }] },
+  { id: "TC-045", title: "Checkout With Saved Card", spec: "tests/ui/checkout.spec.ts", module: "Checkout", feature: "Saved Card Payment", tags: ["@checkout", "@critical", "@regression"], project: "chromium", status: "Flaky", durationMs: 8400, steps: [{ title: "Navigate to checkout", category: "pw:api", durationMs: 980, status: "Passed" }, { title: "Load customer fixture", category: "pw:api", durationMs: 850, status: "Passed" }, { title: "Click Checkout", category: "pw:api", durationMs: 4210, status: "Failed" }, { title: "Retry role locator", category: "pw:api", durationMs: 2360, status: "Passed" }] },
+  { id: "TC-061", title: "Product Search Relevance", spec: "tests/ui/search.spec.ts", module: "Catalog", feature: "Product Search", tags: ["@search", "@regression"], project: "chromium", status: "Passed", durationMs: 2900, steps: [{ title: "Navigate to catalog", category: "pw:api", durationMs: 720, status: "Passed" }, { title: "Search product", category: "pw:api", durationMs: 1410, status: "Passed" }, { title: "Validate ranking", category: "assertion", durationMs: 770, status: "Passed" }] },
+  { id: "TC-070", title: "Password Reset Email", spec: "tests/ui/password-reset.spec.ts", module: "Authentication", feature: "Password Recovery", tags: ["@auth", "@regression"], project: "chromium", status: "Skipped", durationMs: 0, steps: [{ title: "Mail sandbox readiness", category: "hook", durationMs: 0, status: "Skipped" }] },
+];
+
+
+export interface MobileDevice {
+  id: string;
+  name: string;
+  platform: "iOS" | "Android";
+  os: string;
+  udid: string;
+  status: "Available" | "Busy" | "Offline";
+  type: "Physical" | "Simulator" | "Emulator";
+  resolution: string;
+}
+
+export const mobileDevices: MobileDevice[] = [
+  { id: "DEV-001", name: "iPhone 15 Pro", platform: "iOS", os: "17.4", udid: "a1b2c3d4-1111", status: "Available", type: "Physical", resolution: "1179×2556" },
+  { id: "DEV-002", name: "iPhone 14", platform: "iOS", os: "16.6", udid: "e5f6g7h8-2222", status: "Busy", type: "Physical", resolution: "1170×2532" },
+  { id: "DEV-003", name: "iPad Pro 12.9", platform: "iOS", os: "17.2", udid: "i9j0k1l2-3333", status: "Available", type: "Physical", resolution: "2048×2732" },
+  { id: "DEV-004", name: "iPhone 15 Simulator", platform: "iOS", os: "17.4", udid: "sim-ios-001", status: "Available", type: "Simulator", resolution: "1179×2556" },
+  { id: "DEV-005", name: "Samsung Galaxy S24 Ultra", platform: "Android", os: "14", udid: "m3n4o5p6-4444", status: "Available", type: "Physical", resolution: "1440×3088" },
+  { id: "DEV-006", name: "Google Pixel 8 Pro", platform: "Android", os: "14", udid: "q7r8s9t0-5555", status: "Available", type: "Physical", resolution: "1344×2992" },
+  { id: "DEV-007", name: "Samsung Galaxy A54", platform: "Android", os: "13", udid: "u1v2w3x4-6666", status: "Offline", type: "Physical", resolution: "1080×2340" },
+  { id: "DEV-008", name: "Android Emulator API 34", platform: "Android", os: "14", udid: "emu-android-001", status: "Available", type: "Emulator", resolution: "1080×1920" },
+];
+
+export interface MobileTestRun {
+  id: string;
+  testCaseId: string;
+  testTitle: string;
+  deviceId: string;
+  deviceName: string;
+  platform: "iOS" | "Android";
+  status: "Passed" | "Failed" | "Running" | "Skipped";
+  duration: string;
+  selfHealed: boolean;
+  artifacts: string[];
+}
+
+export const mobileTestRuns: MobileTestRun[] = [
+  { id: "MR-001", testCaseId: "TC-001", testTitle: "Login and Search Product", deviceId: "DEV-001", deviceName: "iPhone 15 Pro", platform: "iOS", status: "Passed", duration: "12.3s", selfHealed: false, artifacts: ["screenshot", "video", "device_log"] },
+  { id: "MR-002", testCaseId: "TC-001", testTitle: "Login and Search Product", deviceId: "DEV-005", deviceName: "Samsung Galaxy S24 Ultra", platform: "Android", status: "Passed", duration: "14.8s", selfHealed: false, artifacts: ["screenshot", "video", "device_log"] },
+  { id: "MR-003", testCaseId: "TC-045", testTitle: "Checkout With Saved Card", deviceId: "DEV-001", deviceName: "iPhone 15 Pro", platform: "iOS", status: "Failed", duration: "22.1s", selfHealed: false, artifacts: ["screenshot", "video", "device_log", "crash_log"] },
+  { id: "MR-004", testCaseId: "TC-045", testTitle: "Checkout With Saved Card", deviceId: "DEV-005", deviceName: "Samsung Galaxy S24 Ultra", platform: "Android", status: "Passed", duration: "18.6s", selfHealed: true, artifacts: ["screenshot", "video", "device_log"] },
+  { id: "MR-005", testCaseId: "TC-061", testTitle: "Product Search Relevance", deviceId: "DEV-004", deviceName: "iPhone 15 Simulator", platform: "iOS", status: "Passed", duration: "8.4s", selfHealed: false, artifacts: ["screenshot", "device_log"] },
+  { id: "MR-006", testCaseId: "TC-070", testTitle: "Password Reset Email", deviceId: "DEV-006", deviceName: "Google Pixel 8 Pro", platform: "Android", status: "Skipped", duration: "—", selfHealed: false, artifacts: [] },
+];
+
+
+/* ── ReportPortal-style Failure Analysis dashboard data ── */
+
+export const launchStatsTrend = [
+  { launch: "#476", passed: 168, failed: 14, skipped: 4, investigated: 12, toInvestigate: 2 },
+  { launch: "#477", passed: 172, failed: 10, skipped: 3, investigated: 9,  toInvestigate: 1 },
+  { launch: "#478", passed: 175, failed: 9,  skipped: 3, investigated: 7,  toInvestigate: 2 },
+  { launch: "#479", passed: 178, failed: 7,  skipped: 2, investigated: 6,  toInvestigate: 1 },
+  { launch: "#480", passed: 180, failed: 6,  skipped: 2, investigated: 5,  toInvestigate: 1 },
+  { launch: "#481", passed: 176, failed: 10, skipped: 3, investigated: 8,  toInvestigate: 2 },
+  { launch: "#482", passed: 176, failed: 6,  skipped: 2, investigated: 4,  toInvestigate: 2 },
+];
+
+export const mostFailedTests = [
+  { testId: "TC-045", title: "Checkout With Saved Card",      module: "Checkout",       failCount: 5, totalRuns: 7, failRate: 71, trend: [1,0,0,1,0,1,1] },
+  { testId: "UI-SAUCE-001", title: "Sauce Demo Checkout Flow",module: "Checkout",       failCount: 3, totalRuns: 7, failRate: 43, trend: [0,0,0,1,0,0,1] },
+  { testId: "TC-061", title: "Product Search Relevance",      module: "Catalog",        failCount: 2, totalRuns: 7, failRate: 29, trend: [0,0,0,0,0,1,1] },
+  { testId: "TC-021", title: "Login API Error Handling",      module: "Authentication", failCount: 1, totalRuns: 7, failRate: 14, trend: [0,0,0,0,0,0,1] },
+  { testId: "TC-052", title: "Add To Cart Boundary",          module: "API",            failCount: 1, totalRuns: 7, failRate: 14, trend: [0,0,0,0,1,0,0] },
+];
+
+export const flakyTests = [
+  { testId: "TC-045", title: "Checkout With Saved Card",  failures: 5, switches: 4, flakyRate: 57 },
+  { testId: "TC-061", title: "Product Search Relevance",  failures: 2, switches: 2, flakyRate: 29 },
+  { testId: "UI-SAUCE-001", title: "Sauce Demo Checkout", failures: 3, switches: 1, flakyRate: 43 },
+];
+
+export const uniqueBugsTable = [
+  { bugId: "BUG-102", test: "TC-045",      title: "Checkout failure",          failCount: 5, firstSeen: "#478", lastSeen: "#482", status: "Open",     tags: ["UI change", "locator"] },
+  { bugId: "BUG-103", test: "UI-SAUCE-001",title: "Login error payload mismatch",failCount: 3, firstSeen: "#480", lastSeen: "#482", status: "Open",   tags: ["API response"] },
+  { bugId: "BUG-104", test: "TC-061",      title: "Search returns stale results",failCount: 2, firstSeen: "#481", lastSeen: "#482", status: "Open",   tags: ["Data issue"] },
+  { bugId: "BUG-098", test: "TC-052",      title: "Cart total mismatch",         failCount: 1, firstSeen: "#479", lastSeen: "#479", status: "Resolved", tags: ["Timing"] },
+];
+
+export const investigatedPct = {
+  investigated: 16,
+  toInvestigate: 6,
+  automation: 8,
+  system: 5,
+  productBug: 3,
+};
+
+export const failureDurationData = [
+  { test: "TC-045",      avg: 8.4, min: 4.1, max: 22.1 },
+  { test: "UI-SAUCE-001", avg: 16.9, min: 14.2, max: 21.4 },
+  { test: "TC-061",      avg: 4.2, min: 2.9, max: 6.8 },
+  { test: "TC-021",      avg: 2.8, min: 2.1, max: 3.4 },
+  { test: "TC-052",      avg: 5.1, min: 3.8, max: 6.9 },
 ];

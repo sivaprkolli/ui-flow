@@ -1,9 +1,9 @@
 {
   "pages": {
-    "/business-flows/page": [
+    "/failure-analysis/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/business-flows/page.js"
+      "static/chunks/app/failure-analysis/page.js"
     ],
     "/layout": [
       "static/chunks/webpack.js",

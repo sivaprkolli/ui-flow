@@ -15,6 +15,8 @@ import { Drawer } from "@/components/ui/drawer";
 import { useToast } from "@/components/ui/toast";
 import { executionRows, failureInvestigation, type ExecutionRow } from "@/lib/mock-data";
 import { VariableExecutionEvidence } from "@/components/variables/variable-evidence";
+import { ExecutionControlCenter } from "@/components/execution/execution-control-center";
+import { TestExecutionExplorer } from "@/components/reports/test-execution-explorer";
 import { ActivityIcon } from "@/lib/icons";
 import { cn } from "@/lib/utils";
 
@@ -82,6 +84,8 @@ export default function ExecutionPage() {
         <Selector label="Environment" value="QA" />
         <Selector label="Browser" value="Chromium" icon={<Monitor className="size-3.5" />} />
       </div>
+
+      <ExecutionControlCenter onRunScope={(count, scope) => { setRunning(true); setCompleted(0); toast({ title: "Scoped execution started", description: `${count} tests · ${scope} · QA / Chromium`, variant: "info" }); }} />
 
       {/* Progress */}
       <Card>
@@ -158,6 +162,8 @@ export default function ExecutionPage() {
           </div>
         </CardContent>
       </Card>
+
+      <TestExecutionExplorer />
 
       {/* Failure analysis drawer */}
       <Drawer open={!!failure} onClose={() => setFailure(null)}>

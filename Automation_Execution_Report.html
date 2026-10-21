@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QA Agent — Automation Execution Report · Build #482</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-size:14px;line-height:1.5;background:#0a1628;color:#e8f0fe}
+a{color:#64b5f6;text-decoration:none}
+code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+
+/* ── Header ── */
+.header{background:linear-gradient(110deg,#1a3a8f,#2563eb 55%,#60a5fa);border-bottom:1px solid #3b6fc9;padding:0 28px}
+.header-inner{max-width:1400px;margin:0 auto}
+.header-top{display:flex;align-items:center;gap:14px;padding:14px 0 0}
+.logo{width:40px;height:40px;border-radius:10px;background:#1e3a8a;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.header-title{font-size:18px;font-weight:700;color:#fff}
+.header-sub{font-size:12px;color:#bfdbfe;margin-top:2px}
+.header-space{flex:1}
+.header-actions{display:flex;gap:8px}
+.hbtn{background:#ffffff22;border:1px solid #ffffff44;color:#fff;border-radius:7px;padding:7px 12px;font-size:12px;cursor:pointer}
+.hbtn:hover{background:#ffffff33}
+
+/* ── Tabs ── */
+.tabs{display:flex;gap:2px;padding:12px 0 0;overflow-x:auto}
+.tab{background:transparent;border:none;color:#bfdbfe;padding:10px 16px;border-radius:8px 8px 0 0;cursor:pointer;font-size:13px;font-weight:600;white-space:nowrap}
+.tab:hover{background:#ffffff18}
+.tab.active{background:#0a1628;color:#fff}
+.tab .cnt{margin-left:6px;padding:1px 6px;border-radius:999px;background:#ffffff22;font-size:11px}
+.tab .cnt.red{background:#ef4444;color:#fff}
+
+/* ── Layout ── */
+.main{max-width:1400px;margin:0 auto;padding:24px 28px 60px}
+.view{display:none}
+.view.active{display:block}
+
+/* ── Summary bar ── */
+.run-bar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.verdict{font-size:21px;font-weight:700;color:#f87171}
+.verdict.ok{color:#4ade80}
+.run-chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{padding:4px 10px;border:1px solid #334d80;border-radius:999px;background:#1e3a6e;font-size:11px;color:#93c5fd}
+.chip b{color:#e0efff}
+
+/* ── KPIs ── */
+.kpis{display:grid;grid-template-columns:2.2fr repeat(5,1fr);gap:14px;margin-bottom:22px}
+.kpi{border:1px solid #234;border-radius:12px;background:#111e38;padding:16px 18px;position:relative;overflow:hidden}
+.kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--c,#3b82f6)}
+.kpi-hero{background:linear-gradient(135deg,#1d4ed8,#1e3a8a);border-color:#3b82f6;display:flex;align-items:center;gap:18px}
+.kpi-hero::before{display:none}
+.kpi-label{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:#94a3b8;font-weight:700}
+.kpi-value{font-size:30px;font-weight:700;line-height:1.1;margin-top:4px}
+.kpi-note{font-size:12px;color:#64748b;margin-top:6px}
+.kpi-hero .kpi-label,.kpi-hero .kpi-note{color:#bfdbfe}
+.kpi-hero .kpi-value{color:#fff}
+.donut{width:68px;height:68px;border-radius:50%;border:9px solid #22c55e;border-right-color:#ef4444;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0}
+
+/* ── Grid / Cards ── */
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px;margin-bottom:18px}
+.g4{grid-column:span 4}.g6{grid-column:span 6}.g8{grid-column:span 8}.g12{grid-column:span 12}
+.card{border:1px solid #1e3357;border-radius:12px;background:#111e38;padding:18px;box-shadow:0 4px 24px #00000030}
+.card-title{font-size:14px;font-weight:700;color:#e0efff;margin-bottom:4px}
+.card-desc{font-size:12px;color:#4e6a99;margin-bottom:14px}
+
+/* ── Section headings ── */
+.section{margin-bottom:28px}
+.section-head{display:flex;align-items:center;gap:10px;margin-bottom:14px;font-size:15px;font-weight:700}
+.section-head::after{content:"";height:1px;flex:1;background:#1e3357}
+
+/* ── Bar rows ── */
+.bar-row{display:grid;grid-template-columns:130px 1fr 36px;gap:10px;align-items:center;margin:10px 0;font-size:13px}
+.bar-track{height:12px;background:#1a2e50;border-radius:4px;overflow:hidden;display:flex}
+.bar-pass{height:100%;background:#22c55e;border-radius:4px}
+.bar-fail{height:100%;background:#ef4444}
+.bar-mono{font-family:monospace;font-size:12px;color:#94a3b8}
+
+/* ── Table ── */
+.tbl-wrap{overflow-x:auto;border:1px solid #1e3357;border-radius:10px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{text-align:left;padding:10px 14px;background:#162040;color:#6b8cbf;font-size:11px;text-transform:uppercase;letter-spacing:.05em;font-weight:700}
+tbody td{padding:10px 14px;border-top:1px solid #1a2e50;vertical-align:top}
+tbody tr:hover td{background:#ffffff06;cursor:pointer}
+.mono{font-family:monospace;font-size:12px}
+
+/* ── Pills / badges ── */
+.pill{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:999px;font-size:11px;font-weight:700}
+.pass-pill{background:#14532d;color:#4ade80}
+.fail-pill{background:#7f1d1d;color:#f87171}
+.warn-pill{background:#451a03;color:#fb923c}
+.skip-pill{background:#1e3357;color:#94a3b8}
+.info-pill{background:#1e3a8a;color:#93c5fd}
+
+/* ── History dots ── */
+.dots{display:flex;gap:4px;align-items:center}
+.dot{width:9px;height:9px;border-radius:2px}
+.dot.pass{background:#22c55e}.dot.fail{background:#ef4444}.dot.warn{background:#f59e0b}.dot.skip{background:#475569}
+
+/* ── Filter pills ── */
+.filter-bar{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}
+.fpill{padding:5px 11px;border:1px solid #1e3357;border-radius:999px;background:#111e38;color:#64748b;font-size:12px;cursor:pointer}
+.fpill:hover{border-color:#3b82f6;color:#93c5fd}
+.fpill.active{background:#2563eb;border-color:#2563eb;color:#fff}
+
+/* ── Explorer ── */
+.explorer{display:grid;grid-template-columns:350px 1fr;border:1px solid #1e3357;border-radius:12px;overflow:hidden;min-height:560px}
+.exp-side{background:#0d1e3a;border-right:1px solid #1e3357;display:flex;flex-direction:column}
+.exp-tools{padding:12px;border-bottom:1px solid #1e3357}
+.exp-search{width:100%;background:#0a1628;color:#e8f0fe;border:1px solid #1e3357;border-radius:7px;padding:8px 10px;font-size:12px;outline:none;margin-bottom:8px}
+.exp-modes{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;background:#0a1628;padding:3px;border-radius:7px;margin-bottom:8px}
+.exp-mode{background:transparent;color:#64748b;border:none;padding:6px 4px;border-radius:5px;cursor:pointer;font-size:10px}
+.exp-mode.active{background:#2563eb;color:#fff}
+.exp-sel{width:100%;background:#0a1628;color:#e8f0fe;border:1px solid #1e3357;border-radius:7px;padding:7px;font-size:12px;outline:none}
+.exp-tree{overflow-y:auto;max-height:500px;padding:6px}
+.group-head{display:flex;align-items:center;gap:7px;padding:8px 8px;color:#94a3b8;cursor:pointer;border-radius:6px;font-size:12px;font-weight:600}
+.group-head:hover{background:#ffffff08}
+.gcount{margin-left:auto;font-family:monospace;font-size:11px;color:#4e6a99}
+.test-row{display:flex;align-items:center;gap:8px;padding:7px 10px 7px 22px;cursor:pointer;border-left:2px solid transparent;border-radius:4px;font-size:12px}
+.test-row:hover{background:#ffffff06}
+.test-row.active{background:#1d3a7a;border-left-color:#3b82f6}
+.test-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#e0efff}
+.test-meta{font-size:10px;color:#4e6a99;margin-top:2px}
+.exp-detail{padding:20px;overflow-y:auto}
+.detail-path{font-family:monospace;font-size:11px;color:#4e6a99;margin-bottom:4px}
+.detail-title{font-size:18px;font-weight:700;margin-bottom:10px;color:#e8f0fe}
+.detail-chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px}
+.detail-actions{display:flex;gap:8px;margin-bottom:16px}
+.dbtn{padding:7px 12px;background:#162040;border:1px solid #1e3357;color:#93c5fd;border-radius:7px;cursor:pointer;font-size:12px}
+.dbtn:hover{background:#1d3a6e}
+.steps-head{font-size:11px;color:#4e6a99;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.step{display:grid;grid-template-columns:64px 10px 1fr 80px 52px;gap:8px;align-items:center;padding:8px 10px;border-radius:7px;font-size:12px}
+.step:hover{background:#ffffff06}
+.step.fail-step{background:#7f1d1d22}
+.step-cat{font-family:monospace;font-size:10px;background:#0d1e3a;padding:3px 5px;border-radius:4px;color:#6b8cbf}
+.step-bar{height:5px;background:#162040;border-radius:99px;overflow:hidden}
+.step-bar i{display:block;height:100%;background:#3b82f6;border-radius:99px}
+.step-bar i.fail{background:#ef4444}
+.step-dur{font-family:monospace;font-size:11px;color:#64748b;text-align:right}
+.step-name{color:#e0efff}
+.step-name.failed{color:#f87171;font-weight:600}
+
+/* ── Evidence ── */
+.evidence-box{border:1px solid #3f1515;background:#1a0a0a;border-radius:10px;padding:14px;margin-top:12px}
+.evidence-title{color:#f87171;font-weight:700;font-size:13px;margin-bottom:8px}
+.evidence-pre{font-family:monospace;font-size:12px;color:#fca5a5;background:#0a0505;padding:10px;border-radius:7px;overflow-x:auto;white-space:pre}
+.screenshot{background:#e8fef5;border:1px solid #a7f3d0;border-radius:8px;padding:16px;margin-top:12px}
+.ss-inner{max-width:400px;margin:0 auto;background:#fff;border-radius:6px;padding:16px}
+.ss-field{height:26px;border-bottom:1px solid #e2e8f0;margin:8px 0}
+.ss-btn{height:28px;background:#34d399;border-radius:3px;margin:8px 0}
+.ss-creds{background:#0d2b25;color:#fff;padding:10px;border-radius:4px;font:10px monospace;margin-top:8px}
+.ss-label{text-align:center;font:11px monospace;color:#0d4a33;margin-bottom:8px}
+
+/* ── Bugs ── */
+.bug-item{border:1px solid #1e3357;border-radius:10px;padding:14px;margin-bottom:10px;background:#0d1e3a}
+.bug-id{font-family:monospace;font-size:11px;color:#60a5fa;margin-bottom:4px}
+.bug-title{font-size:14px;font-weight:700;color:#e0efff;margin-bottom:4px}
+.bug-meta{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:10px 0}
+.bug-field{padding:7px;background:#111e38;border:1px solid #1e3357;border-radius:6px;font-size:11px}
+.bug-field small{display:block;color:#4e6a99;text-transform:uppercase;font-size:9px;margin-bottom:3px}
+.bug-fix{border:1px solid #1e4080;background:#0d1e3a;border-radius:7px;padding:10px;font-size:12px;color:#94a3b8;margin-top:8px}
+.callout{border:1px solid #1e4080;background:#0d203a;border-radius:8px;padding:12px;font-size:12px;color:#94a3b8}
+
+/* ── Timeline ── */
+.timeline-row{display:grid;grid-template-columns:90px 1fr 50px;gap:10px;align-items:center;margin:12px 0}
+
+/* ── Environment ── */
+.env-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.env-item{padding:10px;background:#0d1e3a;border:1px solid #1e3357;border-radius:8px}
+.env-key{font-size:10px;color:#4e6a99;text-transform:uppercase;margin-bottom:4px}
+.env-val{font-size:13px;font-weight:600;color:#93c5fd;font-family:monospace}
+
+@media(max-width:900px){
+  .kpis{grid-template-columns:1fr 1fr}
+  .kpi-hero{grid-column:span 2}
+  .grid>.g4,.grid>.g6,.grid>.g8{grid-column:span 12}
+  .explorer{grid-template-columns:1fr}
+  .exp-side{border-right:none;border-bottom:1px solid #1e3357}
+  .main{padding:16px 14px}
+}
+@media print{
+  body{background:#fff;color:#000}
+  .header{background:#1d4ed8;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .tabs,.header-actions,.exp-tools{display:none}
+  .view{display:block!important}
+  .card,.bug-item{box-shadow:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ HEADER ═══════════════ -->
+<header class="header">
+  <div class="header-inner">
+    <div class="header-top">
+      <div class="logo">🧪</div>
+      <div>
+        <div class="header-title">Automation Execution Report</div>
+        <div class="header-sub">Build #482 &nbsp;·&nbsp; QA Regression Suite &nbsp;·&nbsp; 14 Oct 2026 &nbsp;·&nbsp; 18m 42s &nbsp;·&nbsp; 2 workers</div>
+      </div>
+      <div class="header-space"></div>
+      <div class="header-actions">
+        <button class="hbtn" onclick="copySum()">Copy summary</button>
+        <button class="hbtn" onclick="window.print()">Export PDF</button>
+      </div>
+    </div>
+    <nav class="tabs">
+      <button class="tab active" onclick="showTab('overview',this)">Overview</button>
+      <button class="tab" onclick="showTab('tests',this)">Tests <span class="cnt">27</span></button>
+      <button class="tab" onclick="showTab('failures',this)">Failures <span class="cnt red">6</span></button>
+      <button class="tab" onclick="showTab('bugs',this)">Bugs impacting scripts <span class="cnt red">3</span></button>
+      <button class="tab" onclick="showTab('graphs',this)">Graphs</button>
+      <button class="tab" onclick="showTab('timeline',this)">Timeline</button>
+      <button class="tab" onclick="showTab('environment',this)">Environment</button>
+    </nav>
+  </div>
+</header>
+
+<main class="main">
+
+<!-- ═══════════════ OVERVIEW ═══════════════ -->
+<section id="overview" class="view active">
+
+  <div class="run-bar">
+    <div class="verdict">2 of 27 tests failed</div>
+    <div class="run-chips">
+      <span class="chip">Build <b>#482</b></span>
+      <span class="chip">Commit <b>7db2a10 · Shiva K</b></span>
+      <span class="chip">Branch <b>main</b></span>
+      <span class="chip">Suite <b>QA Regression · Chromium + Sauce Demo</b></span>
+    </div>
+  </div>
+
+  <!-- KPIs -->
+  <div class="kpis">
+    <div class="kpi kpi-hero">
+      <div class="donut">92.6%</div>
+      <div>
+        <div class="kpi-label">Pass rate</div>
+        <div class="kpi-value">25 of 27</div>
+        <div class="kpi-note">QA Regression Suite · Build #482</div>
+      </div>
+    </div>
+    <div class="kpi" style="--c:#22c55e">
+      <div class="kpi-label">Passed</div>
+      <div class="kpi-value">25</div>
+      <div class="kpi-note">On first attempt</div>
+    </div>
+    <div class="kpi" style="--c:#ef4444">
+      <div class="kpi-label">Failed</div>
+      <div class="kpi-value">2</div>
+      <div class="kpi-note">Known regressions</div>
+    </div>
+    <div class="kpi" style="--c:#f59e0b">
+      <div class="kpi-label">Flaky</div>
+      <div class="kpi-value">1</div>
+      <div class="kpi-note">Self-healed by AI</div>
+    </div>
+    <div class="kpi" style="--c:#475569">
+      <div class="kpi-label">Skipped</div>
+      <div class="kpi-value">1</div>
+      <div class="kpi-note">Mail sandbox down</div>
+    </div>
+    <div class="kpi" style="--c:#3b82f6">
+      <div class="kpi-label">Duration</div>
+      <div class="kpi-value">18m 42s</div>
+      <div class="kpi-note">Avg 41s per test</div>
+    </div>
+  </div>
+
+  <!-- Charts row -->
+  <div class="grid">
+
+    <!-- Pass rate donut -->
+    <div class="card g6">
+      <div class="card-title">Pass rate — Build #482</div>
+      <div class="card-desc">Outcome for the current regression run</div>
+      <div style="display:flex;align-items:center;gap:28px;margin-top:10px">
+        <div class="donut" style="width:108px;height:108px;border-width:11px;font-size:21px">92.6%</div>
+        <div>
+          <div style="margin:8px 0;display:flex;align-items:center;gap:8px"><span class="dot pass"></span><span style="font-size:13px">Passed &nbsp;<b>25</b></span></div>
+          <div style="margin:8px 0;display:flex;align-items:center;gap:8px"><span class="dot fail"></span><span style="font-size:13px">Failed &nbsp;<b>2</b></span></div>
+          <div style="margin:8px 0;display:flex;align-items:center;gap:8px"><span class="dot warn"></span><span style="font-size:13px">Flaky &nbsp;<b>1</b></span></div>
+          <div style="margin:8px 0;display:flex;align-items:center;gap:8px"><span class="dot skip"></span><span style="font-size:13px">Skipped &nbsp;<b>1</b></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Suites -->
+    <div class="card g6">
+      <div class="card-title">Suites — 3 items total</div>
+      <div class="card-desc">Result composition by project</div>
+      <div class="bar-row"><span>chromium</span><span class="bar-track"><span class="bar-fail" style="width:5%"></span><span class="bar-pass" style="width:90%"></span></span><span class="bar-mono">19</span></div>
+      <div class="bar-row"><span>saucedemo</span><span class="bar-track"><span class="bar-fail" style="width:15%"></span><span class="bar-pass" style="width:75%"></span></span><span class="bar-mono">7</span></div>
+      <div class="bar-row"><span>setup</span><span class="bar-track"><span class="bar-pass" style="width:100%"></span></span><span class="bar-mono">1</span></div>
+    </div>
+
+    <!-- Module breakdown -->
+    <div class="card g6">
+      <div class="card-title">Outcomes by module</div>
+      <div class="card-desc">Pass / fail composition across feature areas</div>
+      <div class="bar-row"><span>Authentication</span><span class="bar-track"><span class="bar-pass" style="width:100%"></span></span><span class="bar-mono">3</span></div>
+      <div class="bar-row"><span>API</span><span class="bar-track"><span class="bar-pass" style="width:100%"></span></span><span class="bar-mono">5</span></div>
+      <div class="bar-row"><span>Checkout</span><span class="bar-track"><span class="bar-fail" style="width:33%"></span><span class="bar-pass" style="width:33%"></span></span><span class="bar-mono">3</span></div>
+      <div class="bar-row"><span>Catalog</span><span class="bar-track"><span class="bar-pass" style="width:100%"></span></span><span class="bar-mono">1</span></div>
+    </div>
+
+    <!-- Failure categories -->
+    <div class="card g6">
+      <div class="card-title">Failure categories</div>
+      <div class="card-desc">What kinds of failures are hurting the suite</div>
+      <div class="bar-row"><span>Element not found</span><span class="bar-track"><span class="bar-fail" style="width:100%"></span></span><span class="bar-mono">1</span></div>
+      <div class="bar-row"><span>Locator changed</span><span class="bar-track"><span class="bar-fail" style="width:100%"></span></span><span class="bar-mono">1</span></div>
+      <div class="bar-row"><span>Stale fixture</span><span class="bar-track"><span class="bar-fail" style="width:50%"></span></span><span class="bar-mono">1</span></div>
+      <div class="bar-row"><span>Environment</span><span class="bar-track"><span class="bar-fail" style="width:30%"></span></span><span class="bar-mono">1</span></div>
+    </div>
+
+    <!-- Duration distribution -->
+    <div class="card g6">
+      <div class="card-title">Duration distribution</div>
+      <div class="card-desc">How the durations of the tests that ran are spread</div>
+      <div style="display:flex;align-items:flex-end;height:140px;gap:8px;padding:10px 0 4px">
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px"><b style="font-size:11px">5</b><div style="width:80%;height:40px;background:#3b82f6;border-radius:4px 4px 0 0"></div><span style="font-size:11px;color:#64748b">&lt;1s</span></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px"><b style="font-size:11px">8</b><div style="width:80%;height:80px;background:#3b82f6;border-radius:4px 4px 0 0"></div><span style="font-size:11px;color:#64748b">1–3s</span></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px"><b style="font-size:11px">9</b><div style="width:80%;height:110px;background:#3b82f6;border-radius:4px 4px 0 0"></div><span style="font-size:11px;color:#64748b">3–10s</span></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px"><b style="font-size:11px">3</b><div style="width:80%;height:50px;background:#ef4444;border-radius:4px 4px 0 0"></div><span style="font-size:11px;color:#64748b">10–30s</span></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px"><b style="font-size:11px">2</b><div style="width:80%;height:30px;background:#ef4444;border-radius:4px 4px 0 0"></div><span style="font-size:11px;color:#64748b">30s+</span></div>
+      </div>
+    </div>
+
+    <!-- Pass rate trend -->
+    <div class="card g6">
+      <div class="card-title">Pass rate trend — last 5 builds</div>
+      <div class="card-desc">Build-over-build reliability</div>
+      <div style="position:relative;height:140px;padding:10px 0">
+        <svg viewBox="0 0 500 120" style="width:100%;height:100%">
+          <polyline points="10,95 125,88 240,82 355,76 470,92" fill="none" stroke="#22c55e" stroke-width="2.5"/>
+          <polyline points="10,110 125,110 240,110 355,110 470,100" fill="none" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="4 3"/>
+          <circle cx="10" cy="95" r="4" fill="#22c55e"/><circle cx="125" cy="88" r="4" fill="#22c55e"/><circle cx="240" cy="82" r="4" fill="#22c55e"/><circle cx="355" cy="76" r="4" fill="#22c55e"/><circle cx="470" cy="92" r="4" fill="#ef4444"/>
+          <text x="10"  y="128" fill="#64748b" font-size="11">#478</text><text x="115" y="128" fill="#64748b" font-size="11">#479</text><text x="230" y="128" fill="#64748b" font-size="11">#480</text><text x="345" y="128" fill="#64748b" font-size="11">#481</text><text x="455" y="128" fill="#64748b" font-size="11">#482</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Current build impact -->
+    <div class="card g12">
+      <div class="card-title">⚠ Current Build Impact</div>
+      <div class="card-desc">Failed tests and open defects affecting automation scripts in build #482</div>
+
+      <div class="filter-bar" id="fb">
+        <button class="fpill active" onclick="filterCause('All',this)">All &nbsp;3</button>
+        <button class="fpill" onclick="filterCause('UI change',this)">UI change &nbsp;2</button>
+        <button class="fpill" onclick="filterCause('Data issue',this)">Data issue &nbsp;1</button>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1.3fr .7fr;gap:14px">
+        <!-- failed tests -->
+        <div>
+          <div class="card-title" style="margin-bottom:10px">List of failed tests</div>
+          <div class="tbl-wrap">
+            <table id="fail-tbl">
+              <thead><tr><th>Test</th><th>Root cause</th><th>Status</th><th>Since</th><th>History · last 5</th></tr></thead>
+              <tbody>
+                <tr data-cause="UI change" onclick="goTest('UI-SAUCE-001')">
+                  <td><b class="mono">UI-SAUCE-001</b><br><span>Automated checkout flow on Sauce Demo</span><br><span style="color:#ef4444;font-size:11px">TimeoutError: locator.fill timeout 15s</span></td>
+                  <td><span class="pill warn-pill">UI change</span><br><span style="font-size:11px;color:#64748b">Element not found</span></td>
+                  <td><span class="pill fail-pill">Open defect</span></td>
+                  <td><span class="pill fail-pill">since #478</span></td>
+                  <td><div class="dots"><i class="dot fail"></i><i class="dot pass"></i><i class="dot pass"></i><i class="dot pass"></i><i class="dot fail"></i><span style="font-size:11px;color:#64748b;margin-left:5px">2/5</span></div></td>
+                </tr>
+                <tr data-cause="UI change" onclick="goTest('TC-045')">
+                  <td><b class="mono">TC-045</b><br><span>Checkout With Saved Card</span><br><span style="color:#f59e0b;font-size:11px">Checkout button locator changed</span></td>
+                  <td><span class="pill warn-pill">UI change</span><br><span style="font-size:11px;color:#64748b">Locator changed</span></td>
+                  <td><span class="pill pass-pill">Self-healed</span></td>
+                  <td><span class="pill fail-pill">since #480</span></td>
+                  <td><div class="dots"><i class="dot pass"></i><i class="dot pass"></i><i class="dot fail"></i><i class="dot pass"></i><i class="dot fail"></i><span style="font-size:11px;color:#64748b;margin-left:5px">2/5</span></div></td>
+                </tr>
+                <tr data-cause="Data issue" onclick="goTest('TC-061')">
+                  <td><b class="mono">TC-061</b><br><span>Product Search Relevance</span><br><span style="color:#f59e0b;font-size:11px">Catalog fixture index is stale</span></td>
+                  <td><span class="pill warn-pill">Data issue</span><br><span style="font-size:11px;color:#64748b">Stale fixture</span></td>
+                  <td><span class="pill info-pill">Investigating</span></td>
+                  <td><span class="pill fail-pill">since #481</span></td>
+                  <td><div class="dots"><i class="dot pass"></i><i class="dot pass"></i><i class="dot pass"></i><i class="dot fail"></i><i class="dot fail"></i><span style="font-size:11px;color:#64748b;margin-left:5px">2/5</span></div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <!-- bugs -->
+        <div>
+          <div class="card-title" style="margin-bottom:10px">Bugs impacting scripts</div>
+          <div class="bug-item">
+            <div class="bug-id">BUG-102</div>
+            <div class="bug-title">Checkout failure</div>
+            <div class="bug-meta">
+              <div class="bug-field"><small>Test</small>TC-045</div>
+              <div class="bug-field"><small>Scripts</small>6 impacted</div>
+              <div class="bug-field"><small>Severity</small><span class="pill fail-pill">Critical</span></div>
+              <div class="bug-field"><small>Requirement</small>REQ-103</div>
+            </div>
+            <div class="bug-fix">Update CheckoutPage locator to role-based selector</div>
+          </div>
+          <div class="bug-item">
+            <div class="bug-id">BUG-103</div>
+            <div class="bug-title">Login error payload mismatch</div>
+            <div class="bug-meta">
+              <div class="bug-field"><small>Test</small>UI-SAUCE-001</div>
+              <div class="bug-field"><small>Scripts</small>2 impacted</div>
+              <div class="bug-field"><small>Severity</small><span class="pill warn-pill">High</span></div>
+              <div class="bug-field"><small>Requirement</small>JIRA-1245</div>
+            </div>
+            <div class="bug-fix">Normalize auth error payload and add contract assertion</div>
+          </div>
+          <div class="callout" style="margin-top:10px"><b>9 script references</b> affected by 3 open defects. Resolve critical UI regressions before release.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Failure evidence -->
+    <div class="card g12">
+      <div class="card-title">Failure evidence — UI-SAUCE-001</div>
+      <div class="card-desc">tests/ui/sauce_demo.spec.ts:7 · 16.9s</div>
+      <div class="evidence-box">
+        <div class="evidence-title">⚠ Element not found · locator.fill</div>
+        <div style="font-size:13px;color:#fca5a5;margin-bottom:8px">getByRole('textbox', { name: 'xyz' }) was not on the page within 15s, so locator.fill could not run.</div>
+        <div style="font-size:12px;color:#94a3b8;margin-bottom:8px">Check the selector. The element may be inside an iframe, behind a login, or only shown after another step.</div>
+        <pre class="evidence-pre">TimeoutError: locator.fill: Timeout 15000ms exceeded.
+Call log:
+  - waiting for getByRole('textbox', { name: 'xyz' })</pre>
+      </div>
+      <div class="screenshot">
+        <div class="ss-label">Screenshot · login page at failure</div>
+        <div class="ss-inner">
+          <div style="text-align:center;font-weight:600;margin-bottom:12px">Swag Labs</div>
+          <div style="font-size:12px;color:#888;margin-bottom:4px">Username</div>
+          <div class="ss-field"></div>
+          <div style="font-size:12px;color:#888;margin-bottom:4px">Password</div>
+          <div class="ss-field"></div>
+          <div class="ss-btn"></div>
+          <div class="ss-creds">Accepted usernames:<br>standard_user · locked_out_user<br>problem_user · performance_glitch_user<br><br>Password for all users: secret_sauce</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end grid -->
+</section><!-- end overview -->
+
+
+<!-- ═══════════════ TESTS ═══════════════ -->
+<section id="tests" class="view">
+  <div class="section-head">Test Execution Explorer</div>
+
+  <!-- Test execution details table -->
+  <div class="card" style="margin-bottom:18px">
+    <div class="card-title">Test execution details — Build #482</div>
+    <div class="card-desc">Click a row to see step-by-step execution below · AI Healing column shows self-heal outcome</div>
+    <div class="tbl-wrap" style="margin-top:12px">
+      <table>
+        <thead><tr><th>Test ID</th><th>Scenario</th><th>Module</th><th>Platform</th><th>Status</th><th>Duration</th><th>AI Healing</th><th>Spec</th></tr></thead>
+        <tbody>
+          <tr onclick="showDetail('SETUP-001')"><td class="mono">SETUP-001</td><td>Authenticate and save storage state</td><td>Authentication</td><td>Chromium</td><td><span class="pill pass-pill">Passed</span></td><td class="mono">1.1s</td><td>Not needed</td><td class="mono" style="font-size:11px">auth.setup.ts</td></tr>
+          <tr onclick="showDetail('API-CART-001')"><td class="mono">API-CART-001</td><td>CREATE - add an item to cart</td><td>API</td><td>Chromium</td><td><span class="pill pass-pill">Passed</span></td><td class="mono">0.3s</td><td>Not needed</td><td class="mono" style="font-size:11px">crud.spec.ts</td></tr>
+          <tr onclick="showDetail('API-CART-002')"><td class="mono">API-CART-002</td><td>READ - list cart items</td><td>API</td><td>Chromium</td><td><span class="pill pass-pill">Passed</span></td><td class="mono">0.7s</td><td>Not needed</td><td class="mono" style="font-size:11px">crud.spec.ts</td></tr>
+          <tr onclick="showDetail('API-CART-003')"><td class="mono">API-CART-003</td><td>UPDATE (PATCH) - change quantity</td><td>API</td><td>Chromium</td><td><span class="pill pass-pill">Passed</span></td><td class="mono">1.3s</td><td>Not needed</td><td class="mono" style="font-size:11px">crud.spec.ts</td></tr>
+          <tr onclick="showDetail('API-ORDER-001')"><td class="mono">API-ORDER-001</td><td>CREATE - place a new order</td><td>API</td><td>Chromium</td><td><span class="pill pass-pill">Passed</span></td><td class="mono">1.6s</td><td>Not needed</td><td class="mono" style="font-size:11px">crud.spec.ts</td></tr>
+          <tr onclick="showDetail('TC-045')"><td class="mono">TC-045</td><td>Checkout With Saved Card</td><td>Checkout</td><td>Web · Chrome</td><td><span class="pill warn-pill">Flaky</span></td><td class="mono">8.4s</td><td><span class="pill pass-pill">Recovered</span></td><td class="mono" style="font-size:11px">checkout.spec.ts</td></tr>
+          <tr onclick="showDetail('UI-SAUCE-001')" style="background:#7f1d1d18"><td class="mono">UI-SAUCE-001</td><td>Automated checkout flow — Sauce Demo</td><td>Checkout</td><td>saucedemo</td><td><span class="pill fail-pill">Failed</span></td><td class="mono">16.9s</td><td><span class="pill fail-pill">Failed</span></td><td class="mono" style="font-size:11px">sauce_demo.spec.ts</td></tr>
+          <tr onclick="showDetail('TC-061')"><td class="mono">TC-061</td><td>Product Search Relevance</td><td>Catalog</td><td>Web · Chrome</td><td><span class="pill pass-pill">Passed</span></td><td class="mono">2.9s</td><td>Not needed</td><td class="mono" style="font-size:11px">search.spec.ts</td></tr>
+          <tr onclick="showDetail('TC-070')"><td class="mono">TC-070</td><td>Password Reset Email</td><td>Authentication</td><td>Web · Chrome</td><td><span class="pill skip-pill">Skipped</span></td><td class="mono">—</td><td>N/A</td><td class="mono" style="font-size:11px">password-reset.spec.ts</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Test execution detail panel -->
+  <div class="card" id="detail-panel">
+    <div style="color:#64748b;text-align:center;padding:30px">Click a test row above to view step-by-step execution details</div>
+  </div>
+
+  <!-- Explorer by module/feature/tag -->
+  <div class="section-head" style="margin-top:24px">Browse by module / feature / tag</div>
+  <div class="explorer">
+    <aside class="exp-side">
+      <div class="exp-tools">
+        <input class="exp-search" placeholder="Search tests, tags, files…" oninput="filterTree(this.value)">
+        <div class="exp-modes">
+          <button class="exp-mode active" onclick="setMode('module',this)">Modules</button>
+          <button class="exp-mode" onclick="setMode('feature',this)">Features</button>
+          <button class="exp-mode" onclick="setMode('tag',this)">Tags</button>
+          <button class="exp-mode" onclick="setMode('spec',this)">Spec files</button>
+          <button class="exp-mode" onclick="setMode('folder',this)">Folders</button>
+          <button class="exp-mode" onclick="setMode('flat',this)">Flat</button>
+        </div>
+        <select class="exp-sel" onchange="setStatus(this.value)">
+          <option>Any status</option><option>Passed</option><option>Failed</option><option>Flaky</option><option>Skipped</option>
+        </select>
+      </div>
+      <div class="exp-tree" id="exp-tree"><!-- rendered by JS --></div>
+    </aside>
+    <div class="exp-detail" id="exp-detail">
+      <div style="color:#4e6a99;text-align:center;padding:40px">Select a test from the list to inspect execution steps</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════ FAILURES ═══════════════ -->
+<section id="failures" class="view">
+  <div class="section-head">Failure Analysis — 6 failures in build #482</div>
+
+  <div class="filter-bar">
+    <button class="fpill active" onclick="filterF('All',this)">All &nbsp;6</button>
+    <button class="fpill" onclick="filterF('UI change',this)">UI change &nbsp;2</button>
+    <button class="fpill" onclick="filterF('Data issue',this)">Data issue &nbsp;1</button>
+    <button class="fpill" onclick="filterF('API response',this)">API response &nbsp;1</button>
+    <button class="fpill" onclick="filterF('Timing',this)">Timing &nbsp;1</button>
+    <button class="fpill" onclick="filterF('Environment',this)">Environment &nbsp;1</button>
+  </div>
+
+  <div class="tbl-wrap" style="margin-bottom:22px">
+    <table id="f-tbl">
+      <thead><tr><th>Failure</th><th>Root cause</th><th>Severity</th><th>AI confidence</th><th>Affected scripts</th><th>Status</th><th>Since</th><th>History</th></tr></thead>
+      <tbody>
+        <tr data-cat="UI change"><td><b class="mono">FA-001 · UI-SAUCE-001</b><br>Automated checkout flow on Sauce Demo<br><span style="font-size:11px;color:#64748b">16.9s · Oct 14</span></td><td><span class="pill warn-pill">UI change</span><br><span style="font-size:11px">Element not found</span></td><td><span class="pill fail-pill">Critical</span></td><td><div class="bar-row" style="margin:4px 0;grid-template-columns:1fr 36px"><span class="bar-track"><span class="bar-pass" style="width:98%"></span></span><span class="bar-mono">98%</span></div></td><td style="text-align:center">1</td><td><span class="pill fail-pill">Open defect</span></td><td><span class="pill fail-pill">since #478</span></td><td><div class="dots"><i class="dot fail"></i><i class="dot pass"></i><i class="dot pass"></i><i class="dot pass"></i><i class="dot fail"></i></div></td></tr>
+        <tr data-cat="UI change"><td><b class="mono">FA-002 · TC-045</b><br>Checkout With Saved Card<br><span style="font-size:11px;color:#64748b">8.4s · Oct 14</span></td><td><span class="pill warn-pill">UI change</span><br><span style="font-size:11px">Locator changed</span></td><td><span class="pill fail-pill">Critical</span></td><td><div class="bar-row" style="margin:4px 0;grid-template-columns:1fr 36px"><span class="bar-track"><span class="bar-pass" style="width:96%"></span></span><span class="bar-mono">96%</span></div></td><td style="text-align:center">6</td><td><span class="pill pass-pill">Self-healed</span></td><td><span class="pill fail-pill">since #480</span></td><td><div class="dots"><i class="dot pass"></i><i class="dot pass"></i><i class="dot fail"></i><i class="dot pass"></i><i class="dot fail"></i></div></td></tr>
+        <tr data-cat="Data issue"><td><b class="mono">FA-003 · TC-061</b><br>Product Search Relevance<br><span style="font-size:11px;color:#64748b">4.2s · Oct 14</span></td><td><span class="pill warn-pill">Data issue</span><br><span style="font-size:11px">Stale fixture</span></td><td><span class="pill warn-pill">Medium</span></td><td><div class="bar-row" style="margin:4px 0;grid-template-columns:1fr 36px"><span class="bar-track"><span class="bar-pass" style="width:87%"></span></span><span class="bar-mono">87%</span></div></td><td style="text-align:center">1</td><td><span class="pill info-pill">Investigating</span></td><td><span class="pill fail-pill">since #481</span></td><td><div class="dots"><i class="dot pass"></i><i class="dot pass"></i><i class="dot pass"></i><i class="dot fail"></i><i class="dot fail"></i></div></td></tr>
+        <tr data-cat="API response"><td><b class="mono">FA-004 · TC-021</b><br>Login API Error Handling<br><span style="font-size:11px;color:#64748b">2.8s · Oct 14</span></td><td><span class="pill warn-pill">API response</span><br><span style="font-size:11px">Unexpected 401 payload</span></td><td><span class="pill warn-pill">High</span></td><td><div class="bar-row" style="margin:4px 0;grid-template-columns:1fr 36px"><span class="bar-track"><span class="bar-pass" style="width:94%"></span></span><span class="bar-mono">94%</span></div></td><td style="text-align:center">2</td><td><span class="pill fail-pill">Open defect</span></td><td><span class="pill warn-pill">new</span></td><td><div class="dots"><i class="dot pass"></i><i class="dot pass"></i><i class="dot pass"></i><i class="dot pass"></i><i class="dot fail"></i></div></td></tr>
+        <tr data-cat="Timing"><td><b class="mono">FA-005 · TC-052</b><br>Add To Cart Boundary<br><span style="font-size:11px;color:#64748b">5.1s · Oct 13</span></td><td><span class="pill warn-pill">Timing</span><br><span style="font-size:11px">Cart total assertion window</span></td><td><span class="pill warn-pill">High</span></td><td><div class="bar-row" style="margin:4px 0;grid-template-columns:1fr 36px"><span class="bar-track"><span class="bar-pass" style="width:91%"></span></span><span class="bar-mono">91%</span></div></td><td style="text-align:center">3</td><td><span class="pill pass-pill">Resolved</span></td><td><span class="pill warn-pill">new</span></td><td><div class="dots"><i class="dot pass"></i><i class="dot pass"></i><i class="dot pass"></i><i class="dot fail"></i><i class="dot pass"></i></div></td></tr>
+        <tr data-cat="Environment"><td><b class="mono">FA-006 · TC-070</b><br>Password Reset Email<br><span style="font-size:11px;color:#64748b">6.3s · Oct 13</span></td><td><span class="pill warn-pill">Environment</span><br><span style="font-size:11px">Mail sandbox unavailable</span></td><td><span class="pill info-pill">Medium</span></td><td><div class="bar-row" style="margin:4px 0;grid-template-columns:1fr 36px"><span class="bar-track"><span class="bar-pass" style="width:89%"></span></span><span class="bar-mono">89%</span></div></td><td style="text-align:center">1</td><td><span class="pill pass-pill">Resolved</span></td><td><span class="pill warn-pill">new</span></td><td><div class="dots"><i class="dot pass"></i><i class="dot pass"></i><i class="dot pass"></i><i class="dot fail"></i><i class="dot pass"></i></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Evidence -->
+  <div class="card">
+    <div class="card-title">Failure evidence — UI-SAUCE-001 (most recent)</div>
+    <div class="card-desc">tests/ui/sauce_demo.spec.ts:7 · 16.9s</div>
+    <div class="evidence-box">
+      <div class="evidence-title">⚠ Element not found · locator.fill</div>
+      <div style="font-family:monospace;font-size:12px;color:#fca5a5;margin-bottom:8px">getByRole('textbox', { name: 'xyz' })</div>
+      <div style="font-size:12px;color:#94a3b8;margin-bottom:10px">The selector was not on the page within 15 seconds, so locator.fill could not run. Check the selector — it may be behind a login or only shown after another step.</div>
+      <pre class="evidence-pre">TimeoutError: locator.fill: Timeout 15000ms exceeded.
+Call log:
+  - waiting for getByRole('textbox', { name: 'xyz' })</pre>
+    </div>
+    <div style="margin-top:14px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+      <div class="callout" style="text-align:center">📸 Screenshot<br><span style="color:#64748b;font-size:11px">Available</span></div>
+      <div class="callout" style="text-align:center">🎬 Video<br><span style="color:#64748b;font-size:11px">Available</span></div>
+      <div class="callout" style="text-align:center">🔎 Trace<br><span style="color:#64748b;font-size:11px">trace.zip · 1.8 MB</span></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════ BUGS ═══════════════ -->
+<section id="bugs" class="view">
+  <div class="section-head">Bugs impacting automation scripts — Build #482</div>
+  <div class="callout" style="margin-bottom:18px">9 script references are affected by 3 open defects. Prioritise critical UI and API regressions before approving release.</div>
+
+  <div class="bug-item">
+    <div class="bug-id">BUG-102</div><div class="bug-title">Checkout failure</div>
+    <div style="color:#64748b;font-size:12px;margin-bottom:8px">UI change — Checkout button locator removed during redesign</div>
+    <div class="bug-meta">
+      <div class="bug-field"><small>Linked test</small>TC-045</div>
+      <div class="bug-field"><small>Scripts impacted</small>6</div>
+      <div class="bug-field"><small>Severity</small><span class="pill fail-pill">Critical</span></div>
+      <div class="bug-field"><small>Requirement</small>REQ-103</div>
+      <div class="bug-field"><small>Status</small><span class="pill fail-pill">Open</span></div>
+      <div class="bug-field"><small>History</small><div class="dots" style="margin-top:4px"><i class="dot pass"></i><i class="dot pass"></i><i class="dot fail"></i><i class="dot pass"></i><i class="dot fail"></i></div></div>
+    </div>
+    <div class="bug-fix">🔧 Update shared CheckoutPage locator to getByRole('button', { name: 'Checkout' })</div>
+  </div>
+
+  <div class="bug-item">
+    <div class="bug-id">BUG-103</div><div class="bug-title">Login error payload mismatch</div>
+    <div style="color:#64748b;font-size:12px;margin-bottom:8px">API response — Authentication endpoint returns undocumented 401 shape</div>
+    <div class="bug-meta">
+      <div class="bug-field"><small>Linked test</small>UI-SAUCE-001</div>
+      <div class="bug-field"><small>Scripts impacted</small>2</div>
+      <div class="bug-field"><small>Severity</small><span class="pill warn-pill">High</span></div>
+      <div class="bug-field"><small>Requirement</small>JIRA-1245</div>
+      <div class="bug-field"><small>Status</small><span class="pill fail-pill">Open</span></div>
+      <div class="bug-field"><small>History</small><div class="dots" style="margin-top:4px"><i class="dot pass"></i><i class="dot pass"></i><i class="dot pass"></i><i class="dot pass"></i><i class="dot fail"></i></div></div>
+    </div>
+    <div class="bug-fix">🔧 Normalize the auth error payload and add a contract assertion</div>
+  </div>
+
+  <div class="bug-item">
+    <div class="bug-id">BUG-104</div><div class="bug-title">Search returns stale results</div>
+    <div style="color:#64748b;font-size:12px;margin-bottom:8px">Data issue — Catalog fixture index is stale after latest repository sync</div>
+    <div class="bug-meta">
+      <div class="bug-field"><small>Linked test</small>TC-061</div>
+      <div class="bug-field"><small>Scripts impacted</small>1</div>
+      <div class="bug-field"><small>Severity</small><span class="pill info-pill">Medium</span></div>
+      <div class="bug-field"><small>Requirement</small>JIRA-1251</div>
+      <div class="bug-field"><small>Status</small><span class="pill info-pill">Open</span></div>
+      <div class="bug-field"><small>History</small><div class="dots" style="margin-top:4px"><i class="dot pass"></i><i class="dot pass"></i><i class="dot pass"></i><i class="dot fail"></i><i class="dot fail"></i></div></div>
+    </div>
+    <div class="bug-fix">🔧 Refresh TD-004 and validate the catalog fixture schema</div>
+  </div>
+</section>
+
+
+<!-- ═══════════════ GRAPHS ═══════════════ -->
+<section id="graphs" class="view">
+  <div class="section-head">Execution Analytics</div>
+  <div class="grid">
+    <div class="card g6">
+      <div class="card-title">Pass rate trend — last 5 builds</div>
+      <svg viewBox="0 0 500 150" style="width:100%;height:150px;margin-top:10px">
+        <polyline points="10,110 125,100 240,88 355,70 470,85" fill="none" stroke="#22c55e" stroke-width="2.5"/>
+        <polyline points="10,135 125,135 240,135 355,135 470,118" fill="none" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="4 3"/>
+        <text x="8" y="148" fill="#64748b" font-size="11">#478</text><text x="115" y="148" fill="#64748b" font-size="11">#479</text><text x="228" y="148" fill="#64748b" font-size="11">#480</text><text x="343" y="148" fill="#64748b" font-size="11">#481</text><text x="458" y="148" fill="#64748b" font-size="11">#482</text>
+        <circle cx="10" cy="110" r="4" fill="#22c55e"/><circle cx="125" cy="100" r="4" fill="#22c55e"/><circle cx="240" cy="88" r="4" fill="#22c55e"/><circle cx="355" cy="70" r="4" fill="#22c55e"/><circle cx="470" cy="85" r="4" fill="#ef4444"/>
+        <text x="14" y="108" fill="#22c55e" font-size="10">88%</text><text x="129" y="98" fill="#22c55e" font-size="10">90%</text><text x="244" y="86" fill="#22c55e" font-size="10">93%</text><text x="359" y="68" fill="#22c55e" font-size="10">96%</text><text x="474" y="83" fill="#f87171" font-size="10">92%</text>
+      </svg>
+    </div>
+    <div class="card g6">
+      <div class="card-title">Execution duration trend (minutes)</div>
+      <svg viewBox="0 0 500 150" style="width:100%;height:150px;margin-top:10px">
+        <polyline points="10,40 125,50 240,55 355,60 470,45" fill="none" stroke="#60a5fa" stroke-width="2.5"/>
+        <text x="8" y="148" fill="#64748b" font-size="11">#478</text><text x="115" y="148" fill="#64748b" font-size="11">#479</text><text x="228" y="148" fill="#64748b" font-size="11">#480</text><text x="343" y="148" fill="#64748b" font-size="11">#481</text><text x="458" y="148" fill="#64748b" font-size="11">#482</text>
+        <circle cx="10" cy="40" r="4" fill="#60a5fa"/><circle cx="125" cy="50" r="4" fill="#60a5fa"/><circle cx="240" cy="55" r="4" fill="#60a5fa"/><circle cx="355" cy="60" r="4" fill="#60a5fa"/><circle cx="470" cy="45" r="4" fill="#60a5fa"/>
+        <text x="14" y="38" fill="#93c5fd" font-size="10">22.8m</text><text x="129" y="48" fill="#93c5fd" font-size="10">21.7m</text><text x="244" y="53" fill="#93c5fd" font-size="10">20.1m</text><text x="359" y="58" fill="#93c5fd" font-size="10">19.3m</text><text x="474" y="43" fill="#93c5fd" font-size="10">18.7m</text>
+      </svg>
+    </div>
+    <div class="card g4"><div class="card-title">Outcomes by module</div>
+      <div class="bar-row"><span>Authentication</span><span class="bar-track"><span class="bar-pass" style="width:100%"></span></span><span class="bar-mono">3</span></div>
+      <div class="bar-row"><span>API</span><span class="bar-track"><span class="bar-pass" style="width:100%"></span></span><span class="bar-mono">5</span></div>
+      <div class="bar-row"><span>Checkout</span><span class="bar-track"><span class="bar-fail" style="width:33%"></span><span class="bar-pass" style="width:33%"></span></span><span class="bar-mono">3</span></div>
+      <div class="bar-row"><span>Catalog</span><span class="bar-track"><span class="bar-pass" style="width:100%"></span></span><span class="bar-mono">1</span></div>
+    </div>
+    <div class="card g4"><div class="card-title">Cross-browser results</div>
+      <div class="bar-row"><span>Chromium</span><span class="bar-track"><span class="bar-fail" style="width:5%"></span><span class="bar-pass" style="width:90%"></span></span><span class="bar-mono">94%</span></div>
+      <div class="bar-row"><span>Firefox</span><span class="bar-track"><span class="bar-fail" style="width:8%"></span><span class="bar-pass" style="width:86%"></span></span><span class="bar-mono">91%</span></div>
+      <div class="bar-row"><span>WebKit</span><span class="bar-track"><span class="bar-fail" style="width:10%"></span><span class="bar-pass" style="width:84%"></span></span><span class="bar-mono">90%</span></div>
+    </div>
+    <div class="card g4"><div class="card-title">Failure categories</div>
+      <div class="bar-row"><span>Element not found</span><span class="bar-track"><span class="bar-fail" style="width:100%"></span></span><span class="bar-mono">1</span></div>
+      <div class="bar-row"><span>Locator changed</span><span class="bar-track"><span class="bar-fail" style="width:100%"></span></span><span class="bar-mono">1</span></div>
+      <div class="bar-row"><span>Stale fixture</span><span class="bar-track"><span class="bar-fail" style="width:50%"></span></span><span class="bar-mono">1</span></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════ TIMELINE ═══════════════ -->
+<section id="timeline" class="view">
+  <div class="section-head">Execution Timeline</div>
+  <div class="card">
+    <div class="card-title">Worker timeline — Build #482</div>
+    <div class="card-desc">Two workers executing QA Regression Suite</div>
+    <div style="margin-top:18px">
+      <div class="timeline-row"><span style="color:#94a3b8">Worker 0</span><span class="bar-track"><span class="bar-pass" style="width:72%"></span><span class="bar-fail" style="width:18%"></span></span><span class="bar-mono">10.8s</span></div>
+      <div class="timeline-row"><span style="color:#94a3b8">Worker 1</span><span class="bar-track"><span class="bar-pass" style="width:88%"></span></span><span class="bar-mono">7.9s</span></div>
+    </div>
+    <div class="card-desc" style="margin-top:18px">Test execution order</div>
+    <div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:8px">
+      <span class="pill pass-pill">SETUP-001 · 1.1s</span>
+      <span class="pill pass-pill">API-CART-001 · 0.3s</span>
+      <span class="pill pass-pill">API-CART-002 · 0.7s</span>
+      <span class="pill pass-pill">API-CART-003 · 1.3s</span>
+      <span class="pill pass-pill">API-ORDER-001 · 1.6s</span>
+      <span class="pill warn-pill">TC-045 · 8.4s ⚡</span>
+      <span class="pill fail-pill">UI-SAUCE-001 · 16.9s ✕</span>
+      <span class="pill pass-pill">TC-061 · 2.9s</span>
+      <span class="pill skip-pill">TC-070 · skipped</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════ ENVIRONMENT ═══════════════ -->
+<section id="environment" class="view">
+  <div class="section-head">Environment</div>
+  <div class="card">
+    <div class="card-title">Run metadata — Build #482</div>
+    <div class="env-grid" style="margin-top:14px">
+      <div class="env-item"><div class="env-key">Playwright</div><div class="env-val">1.63.0</div></div>
+      <div class="env-item"><div class="env-key">Node.js</div><div class="env-val">v24.20.0</div></div>
+      <div class="env-item"><div class="env-key">Operating System</div><div class="env-val">Darwin 25.6.0 (arm64)</div></div>
+      <div class="env-item"><div class="env-key">Browsers</div><div class="env-val">chromium, saucedemo</div></div>
+      <div class="env-item"><div class="env-key">Workers</div><div class="env-val">2</div></div>
+      <div class="env-item"><div class="env-key">Commit</div><div class="env-val">7db2a10 · Shiva K · changes</div></div>
+      <div class="env-item"><div class="env-key">Branch</div><div class="env-val">main</div></div>
+      <div class="env-item"><div class="env-key">Base URL</div><div class="env-val">https://qa.example.test</div></div>
+      <div class="env-item"><div class="env-key">Test data</div><div class="env-val">TD-001, TD-002, TD-003, TD-004, TD-005</div></div>
+      <div class="env-item"><div class="env-key">Canonical variables</div><div class="env-val">VAR-001 → VAR-011</div></div>
+      <div class="env-item"><div class="env-key">Report generated</div><div class="env-val">14 Oct 2026, 11:47:41</div></div>
+      <div class="env-item"><div class="env-key">Duration</div><div class="env-val">18m 42s</div></div>
+    </div>
+    <div class="callout" style="margin-top:14px"><b>Reproducibility:</b> Build, commit, branch, browser, worker count, base URL, canonical variables, test-data datasets, and artifact types are recorded with this execution for defect reproduction and audit purposes.</div>
+  </div>
+</section>
+
+</main>
+
+<script>
+/* ──────────────────────────────── Tab switching ──────────────────────────────── */
+function showTab(id, btn) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  if (id === 'tests') buildTree();
+}
+
+/* ──────────────────────────────── Test detail ──────────────────────────────── */
+const tests = {
+  'SETUP-001':    {title:'authenticate and save storage state',spec:'tests/auth.setup.ts',module:'Authentication',feature:'Session Setup',tags:['@setup','@auth'],project:'chromium',status:'Passed',duration:1100,steps:[['hook','Before Hooks',533,'Passed'],['pw:api','Navigate',575,'Passed'],['pw:api','Fill standard_user',66,'Passed'],['pw:api','Fill password',34,'Passed'],['pw:api','Click Login',50,'Passed']]},
+  'API-CART-001': {title:'CREATE - add an item to the cart',spec:'tests/api/crud.spec.ts',module:'API',feature:'Cart Items',tags:['@api','@crud','@smoke'],project:'chromium',status:'Passed',duration:308,steps:[['hook','Create API client',42,'Passed'],['pw:api','POST /cart/items',214,'Passed'],['assertion','Validate created item',52,'Passed']]},
+  'API-CART-002': {title:'READ - list cart items',spec:'tests/api/crud.spec.ts',module:'API',feature:'Cart Items',tags:['@api','@crud','@smoke'],project:'chromium',status:'Passed',duration:703,steps:[['pw:api','GET /cart/items',610,'Passed'],['assertion','Validate response schema',93,'Passed']]},
+  'API-CART-003': {title:'UPDATE (PATCH) - change item quantity',spec:'tests/api/crud.spec.ts',module:'API',feature:'Cart Items',tags:['@api','@crud','@regression'],project:'chromium',status:'Passed',duration:1329,steps:[['pw:api','PATCH /cart/items',1190,'Passed'],['assertion','Validate cart quantity',139,'Passed']]},
+  'API-ORDER-001':{title:'CREATE - place a new order',spec:'tests/api/crud.spec.ts',module:'API',feature:'Orders',tags:['@api','@crud','@smoke'],project:'chromium',status:'Passed',duration:1582,steps:[['pw:api','POST /orders',1450,'Passed'],['assertion','Validate order ID',132,'Passed']]},
+  'TC-045':       {title:'Checkout With Saved Card',spec:'tests/ui/checkout.spec.ts',module:'Checkout',feature:'Saved Card Payment',tags:['@checkout','@critical','@regression'],project:'chromium',status:'Flaky',duration:8400,steps:[['pw:api','Navigate to checkout',980,'Passed'],['pw:api','Load customer fixture',850,'Passed'],['pw:api','Click Checkout',4210,'Failed'],['pw:api','Retry role locator',2360,'Passed']]},
+  'UI-SAUCE-001': {title:'Automated checkout flow on Sauce Demo',spec:'tests/ui/sauce_demo.spec.ts',module:'Checkout',feature:'Sauce Demo Checkout Flow',tags:['@sauceTest','@ui','@smoke'],project:'saucedemo',status:'Failed',duration:16930,steps:[['hook','Before Hooks',1563,'Passed'],['pw:api','Navigate',933,'Passed'],['pw:api','Fill username',15003,'Failed'],['hook','After Hooks',515,'Passed']]},
+  'TC-061':       {title:'Product Search Relevance',spec:'tests/ui/search.spec.ts',module:'Catalog',feature:'Product Search',tags:['@search','@regression'],project:'chromium',status:'Passed',duration:2900,steps:[['pw:api','Navigate to catalog',720,'Passed'],['pw:api','Search product',1410,'Passed'],['assertion','Validate ranking',770,'Passed']]},
+  'TC-070':       {title:'Password Reset Email',spec:'tests/ui/password-reset.spec.ts',module:'Authentication',feature:'Password Recovery',tags:['@auth','@regression'],project:'chromium',status:'Skipped',duration:0,steps:[['hook','Mail sandbox readiness',0,'Skipped']]}
+};
+
+function fmt(ms) { return ms < 1000 ? ms + 'ms' : (ms/1000).toFixed(ms < 10000 ? 1 : 0) + 's'; }
+function statusPill(s) {
+  if (s==='Passed')  return '<span class="pill pass-pill">Passed</span>';
+  if (s==='Failed')  return '<span class="pill fail-pill">Failed</span>';
+  if (s==='Flaky')   return '<span class="pill warn-pill">Flaky</span>';
+  if (s==='Skipped') return '<span class="pill skip-pill">Skipped</span>';
+  return s;
+}
+
+function showDetail(id) {
+  const t = tests[id];
+  if (!t) return;
+  const panel = document.getElementById('detail-panel');
+  const failEvidence = t.status === 'Failed' ? `
+    <div class="evidence-box" style="margin-top:14px">
+      <div class="evidence-title">⚠ Failure evidence</div>
+      <pre class="evidence-pre">TimeoutError: locator.fill: Timeout 15000ms exceeded.
+Call log:
+  - waiting for getByRole('textbox', { name: 'xyz' })</pre>
+    </div>` : '';
+  const stepsHtml = t.steps.map(([cat,name,dur,stat]) => {
+    const pct = t.duration ? Math.max(2, dur/t.duration*100) : 2;
+    const fail = stat === 'Failed';
+    return `<div class="step ${fail ? 'fail-step' : ''}">
+      <span class="step-cat">${cat}</span>
+      <span class="dot ${fail?'fail':'pass'}"></span>
+      <span class="step-name ${fail?'failed':''}">${name}</span>
+      <span class="step-bar"><i class="${fail?'fail':''}" style="width:${pct}%"></i></span>
+      <span class="step-dur">${fmt(dur)}</span>
+    </div>`;
+  }).join('');
+  panel.innerHTML = `
+    <div style="margin-bottom:4px" class="mono" style="font-size:11px;color:#4e6a99">${t.spec}</div>
+    <div style="font-size:18px;font-weight:700;margin-bottom:10px;color:#e8f0fe">${t.title}</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
+      ${statusPill(t.status)}
+      ${t.tags.map(x=>`<span class="chip">${x}</span>`).join('')}
+      <span class="chip">${fmt(t.duration)} · ${t.project}</span>
+      <span class="chip">${t.module} · ${t.feature}</span>
+    </div>
+    <div class="steps-head">Execution steps — bar = share of ${fmt(t.duration||1)}</div>
+    ${stepsHtml}
+    ${failEvidence}`;
+}
+
+function goTest(id) {
+  showTab('tests', document.querySelector('.tab[onclick*="tests"]'));
+  setTimeout(() => showDetail(id), 50);
+}
+
+/* ──────────────────────────────── Explorer tree ──────────────────────────────── */
+let treeMode = 'module', treeQuery = '', treeStatus = 'Any status';
+
+function buildTree() {
+  const tree = document.getElementById('exp-tree');
+  if (!tree) return;
+  const all = Object.entries(tests);
+  const visible = all.filter(([id, t]) => {
+    const match = !treeQuery || (id+t.title+t.spec+t.module+t.feature+t.tags.join(' ')).toLowerCase().includes(treeQuery.toLowerCase());
+    const statusMatch = treeStatus === 'Any status' || t.status === treeStatus;
+    return match && statusMatch;
+  });
+
+  const groups = new Map();
+  visible.forEach(([id, t]) => {
+    let keys = treeMode==='module' ? [t.module] : treeMode==='feature' ? [t.feature] : treeMode==='tag' ? t.tags : treeMode==='spec' ? [t.spec] : treeMode==='folder' ? [t.spec.split('/').slice(0,-1).join('/')] : ['All tests'];
+    keys.forEach(k => { if (!groups.has(k)) groups.set(k,[]); groups.get(k).push([id,t]); });
+  });
+
+  tree.innerHTML = '';
+  [...groups.entries()].sort().forEach(([grp, items]) => {
+    const fails = items.filter(([,t]) => t.status==='Failed').length;
+    const div = document.createElement('div');
+    div.className = 'group-head';
+    div.innerHTML = `<span>▾</span><span>📁 ${grp}</span><span class="gcount">${items.length}${fails?' &nbsp;<span style="color:#ef4444">'+fails+'✕</span>':''}</span>`;
+    const list = document.createElement('div');
+    items.forEach(([id, t]) => {
+      const row = document.createElement('div');
+      row.className = 'test-row';
+      row.innerHTML = `<span class="dot ${t.status.toLowerCase()}"></span><span style="min-width:0;flex:1"><span class="test-name">${t.title}</span><div class="test-meta">${fmt(t.duration)} · ${t.project} · ${t.tags[0]}</div></span>`;
+      row.onclick = () => { document.querySelectorAll('.test-row').forEach(r=>r.classList.remove('active')); row.classList.add('active'); showExpDetail(id); };
+      list.append(row);
+    });
+    div.onclick = () => list.style.display = list.style.display==='none' ? '' : 'none';
+    tree.append(div, list);
+  });
+}
+
+function showExpDetail(id) {
+  const t = tests[id];
+  const d = document.getElementById('exp-detail');
+  const pct = s => t.duration ? Math.max(2, s[2]/t.duration*100) : 2;
+  d.innerHTML = `
+    <div class="detail-path">${t.spec}</div>
+    <div class="detail-title">${t.title}</div>
+    <div class="detail-chips">
+      ${statusPill(t.status)}
+      ${t.tags.map(x=>`<span class="chip">${x}</span>`).join('')}
+      <span class="chip">${fmt(t.duration)} · ${t.project}</span>
+    </div>
+    <div class="detail-actions">
+      <button class="dbtn" onclick="navigator.clipboard?.writeText(location.href+'#'+\`${id}\`)">Copy link</button>
+      <button class="dbtn">Open in VS Code</button>
+    </div>
+    <div class="steps-head">Execution steps &nbsp;·&nbsp; bar = share of ${fmt(t.duration||1)}</div>
+    ${t.steps.map(s=>`<div class="step ${s[3]==='Failed'?'fail-step':''}"><span class="step-cat">${s[0]}</span><span class="dot ${s[3]==='Failed'?'fail':'pass'}"></span><span class="step-name ${s[3]==='Failed'?'failed':''}">${s[1]}</span><span class="step-bar"><i class="${s[3]==='Failed'?'fail':''}" style="width:${pct(s)}%"></i></span><span class="step-dur">${fmt(s[2])}</span></div>`).join('')}
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:18px">
+      <div class="env-item"><div class="env-key">Module</div><div class="env-val">${t.module}</div></div>
+      <div class="env-item"><div class="env-key">Feature</div><div class="env-val">${t.feature}</div></div>
+      <div class="env-item"><div class="env-key">Project</div><div class="env-val">${t.project}</div></div>
+      <div class="env-item"><div class="env-key">Tags</div><div class="env-val">${t.tags.join(', ')}</div></div>
+    </div>`;
+}
+
+function filterTree(q) { treeQuery = q; buildTree(); }
+function setMode(m, btn) { treeMode = m; document.querySelectorAll('.exp-mode').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); buildTree(); }
+function setStatus(s) { treeStatus = s; buildTree(); }
+
+/* ──────────────────────────────── Root-cause filters ──────────────────────────────── */
+function filterCause(cause, btn) {
+  document.querySelectorAll('#fb .fpill').forEach(b=>b.classList.remove('active')); btn.classList.add('active');
+  document.querySelectorAll('#fail-tbl tbody tr').forEach(row => {
+    row.style.display = (cause==='All' || row.dataset.cause===cause) ? '' : 'none';
+  });
+}
+function filterF(cat, btn) {
+  document.querySelectorAll('.filter-bar .fpill').forEach(b=>b.classList.remove('active')); btn.classList.add('active');
+  document.querySelectorAll('#f-tbl tbody tr').forEach(row => {
+    row.style.display = (cat==='All' || row.dataset.cat===cat) ? '' : 'none';
+  });
+}
+
+/* ──────────────────────────────── Copy summary ──────────────────────────────── */
+function copySum() {
+  navigator.clipboard?.writeText('QA Agent Automation Report #482\nPass rate: 92.59%\nPassed: 25  Failed: 2  Flaky: 1  Skipped: 1\nOpen bugs: 3  Impacted scripts: 9\nBranch: main  Commit: 7db2a10');
+}
+</script>
+</body>
+</html>

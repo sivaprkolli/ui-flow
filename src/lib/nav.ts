@@ -1,5 +1,5 @@
 import {
-  LayoutDashboard, ClipboardList, Brain, FlaskConical, FileText, FileCheck2, Database, Bot,
+  LayoutDashboard, ClipboardList, Brain, FlaskConical, FileText, FileCheck2, Database, Bot, MonitorSmartphone,
   Play, Search, FileBarChart, CircleDot, HeartPulse, Bug, BarChart3, GitBranch, BookOpen, Settings, LucideIcon,
 } from "lucide-react";
 
@@ -19,6 +19,8 @@ export const navItems: NavItem[] = [
   { href: "/bdd", label: "BDD Builder", icon: FileCheck2 },
   { href: "/test-data", label: "Test Data", icon: Database },
   { href: "/automation", label: "Automation", icon: Bot },
+  { href: "/mobile-automation", label: "Mobile Automation", icon: MonitorSmartphone },
+  { href: "/mobile-recorder", label: "Mobile Recorder", icon: CircleDot },
   { href: "/recorder", label: "Recorder", icon: CircleDot },
   { href: "/business-flows", label: "Business Flows", icon: GitBranch },
   { href: "/execution", label: "Test Execution", icon: Play },
